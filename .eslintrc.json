@@ -46,6 +46,8 @@
               "ts": "never",
               "tsx": "never"
             }
-        ]
+        ],
+        "react/jsx-wrap-multilines": "off",
+        "react/jsx-props-no-spreading": "off"
     }
 }
