@@ -18,6 +18,7 @@ import {
   LastPage,
   Refresh,
   Search,
+  Visibility,
 } from '@material-ui/icons';
 
 import useStyles from './styles';
@@ -26,7 +27,7 @@ import IGroup from '../../typescript/IGroup';
 import subHours from '../../utils/subHours';
 import PatientContext from '../../contexts/patientContext';
 
-const Oldman: React.FC = () => {
+const NewPatients: React.FC = () => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
   const { getGroupsCall, getPatientsCall } = useContext(PatientContext);
@@ -80,6 +81,12 @@ const Oldman: React.FC = () => {
                 field: 'id',
                 type: 'numeric',
                 align: 'left',
+                headerStyle: {
+                  width: '5%',
+                },
+                cellStyle: {
+                  width: '5%',
+                },
               },
               {
                 title: 'Nome',
@@ -127,6 +134,11 @@ const Oldman: React.FC = () => {
                 onClick: () =>
                   tableRef.current && tableRef.current.onQueryChange(),
               },
+              {
+                icon: () => <Visibility />,
+                tooltip: 'Visualizar Dados',
+                onClick: () => alert('Visualizado'),
+              },
             ]}
             localization={{
               toolbar: {
@@ -150,7 +162,6 @@ const Oldman: React.FC = () => {
             }}
             options={{
               actionsColumnIndex: -1,
-              actionsCellStyle: { width: '10%' },
               headerStyle: {
                 backgroundColor: defaultStyles.purpleDark,
                 color: '#fff',
@@ -188,4 +199,4 @@ const Oldman: React.FC = () => {
   );
 };
 
-export default Oldman;
+export default NewPatients;
