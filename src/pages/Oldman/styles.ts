@@ -22,6 +22,13 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 1140,
     height: 640,
   },
+  selectGroups: {
+    position: 'absolute',
+    width: '100%',
+    maxWidth: 300,
+    left: 450,
+    top: 5,
+  },
 }));
 
 export default useStyles;

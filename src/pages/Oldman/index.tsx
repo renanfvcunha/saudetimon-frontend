@@ -1,5 +1,14 @@
-import React, { createRef, forwardRef, RefObject } from 'react';
-import MaterialTable, { Icons } from 'material-table';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  createRef,
+  forwardRef,
+  RefObject,
+  ChangeEvent,
+} from 'react';
+import MaterialTable, { Icons, MTableToolbar } from 'material-table';
+import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import {
   ArrowDownward,
   ChevronLeft,
@@ -10,17 +19,24 @@ import {
   Refresh,
   Search,
 } from '@material-ui/icons';
-import { toast } from 'react-toastify';
 
 import useStyles from './styles';
 import defaultStyles from '../../utils/defaultStyles';
-import api from '../../services/api';
-import IPatients from '../../typescript/IPatients';
-import subtractHours from '../../utils/subtractHours';
+import IGroup from '../../typescript/IGroup';
+import subHours from '../../utils/subHours';
+import PatientContext from '../../contexts/patientContext';
 
 const Oldman: React.FC = () => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
+  const { getGroupsCall, getPatientsCall } = useContext(PatientContext);
+
+  const [groups, setGroups] = useState<IGroup[]>();
+  const [selectedGroup, setSelectedGroup] = useState('');
+
+  const handleChangeGroup = (e: ChangeEvent<{ value: unknown }>) => {
+    setSelectedGroup(e.target.value as string);
+  };
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -36,9 +52,19 @@ const Oldman: React.FC = () => {
     )),
   };
 
-  const dataRequestFailure = (errorMsg: string) => {
-    toast.error(errorMsg);
-  };
+  useEffect(() => {
+    const getGroups = async () => {
+      const data = await getGroupsCall();
+
+      setGroups(data);
+    };
+
+    getGroups();
+  }, [getGroupsCall]);
+
+  useEffect(() => {
+    tableRef.current?.onQueryChange();
+  }, [tableRef, selectedGroup]);
 
   return (
     <main className={classes.content}>
@@ -50,8 +76,8 @@ const Oldman: React.FC = () => {
             tableRef={tableRef}
             columns={[
               {
-                title: '#',
-                field: 'num',
+                title: 'ID',
+                field: 'id',
                 type: 'numeric',
                 align: 'left',
               },
@@ -76,37 +102,19 @@ const Oldman: React.FC = () => {
             ]}
             data={query =>
               new Promise((resolve, reject) => {
-                const url = `patients?per_page=${query.pageSize}&page=${query.page}`;
-
-                api
-                  .get(url)
-                  .then(response => {
+                getPatientsCall(query.pageSize, query.page, selectedGroup)
+                  .then(patient => {
                     resolve({
-                      data: response.data.map((res: IPatients, i: number) => ({
-                        ...res,
-                        createdAt: subtractHours(res.createdAt),
-                        num: i + 1,
+                      data: patient.data.map(ptt => ({
+                        ...ptt,
+                        createdAt: subHours(ptt.createdAt),
                       })),
-                      page: Number(response.headers.page),
-                      totalCount: Number(response.headers['total-count']),
+                      page: patient.page,
+                      totalCount: patient.totalCount,
                     });
                   })
-                  .catch(err => {
-                    if (err.message === 'Network Error') {
-                      reject(
-                        dataRequestFailure(
-                          'Não foi possível conectar ao servidor. Tente novamente ou contate o suporte.'
-                        )
-                      );
-                    } else if (err.response) {
-                      reject(dataRequestFailure(err.response.data.msg));
-                    } else {
-                      reject(
-                        dataRequestFailure(
-                          'Ocorreu um erro na requisição dos dados.'
-                        )
-                      );
-                    }
+                  .catch(() => {
+                    reject();
                   });
               })
             }
@@ -149,6 +157,29 @@ const Oldman: React.FC = () => {
               },
               sorting: false,
               search: false,
+            }}
+            components={{
+              Toolbar: props => (
+                <>
+                  <MTableToolbar {...props} />
+                  {groups && (
+                    <FormControl className={classes.selectGroups}>
+                      <InputLabel>Grupo</InputLabel>
+                      <Select
+                        value={selectedGroup}
+                        onChange={handleChangeGroup}
+                      >
+                        <MenuItem value="">Todos</MenuItem>
+                        {groups.map(group => (
+                          <MenuItem key={group.id} value={String(group.id)}>
+                            {group.group}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                </>
+              ),
             }}
           />
         </div>
