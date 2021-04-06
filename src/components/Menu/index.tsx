@@ -15,6 +15,7 @@ import {
   ListItemIcon,
   ListItemText,
   ThemeProvider,
+  Collapse,
 } from '@material-ui/core';
 import {
   Menu as MenuIcon,
@@ -23,12 +24,17 @@ import {
   Home,
   ExitToApp,
   Group,
+  ExpandMore,
+  ExpandLess,
+  NewReleases,
 } from '@material-ui/icons';
 
 import useStyles, { ThemeColor } from './styles';
 import Routes from '../../routes';
 import authContext from '../../contexts/authContext';
 import logoGED from '../../images/logoGED.png';
+import oldmanIcon from '../../images/icons/oldmanIcon.svg';
+import vaccineIcon from '../../images/icons/vaccineIcon.svg';
 
 const Menu: React.FC = () => {
   const classes = useStyles();
@@ -39,6 +45,7 @@ const Menu: React.FC = () => {
   const [changePathName, setChangePathName] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
   const [pathName, setPathName] = useState('');
+  const [expandPatients, setExpandPatients] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -133,6 +140,44 @@ const Menu: React.FC = () => {
                   <ListItemText primary="Início" />
                 </ListItem>
               </Link>
+
+              <ListItem
+                button
+                onClick={() => setExpandPatients(!expandPatients)}
+                className={classes.link}
+              >
+                <ListItemIcon>
+                  <NewReleases className={classes.icon} />
+                </ListItemIcon>
+                <ListItemText primary="Novos Pacientes" />
+                {expandPatients ? (
+                  <ExpandLess className={classes.icon} />
+                ) : (
+                  <ExpandMore className={classes.icon} />
+                )}
+              </ListItem>
+
+              <Collapse in={expandPatients}>
+                <List disablePadding>
+                  <Link to="/oldman" className={classes.link}>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <img src={oldmanIcon} alt="OldmanIcon" />
+                      </ListItemIcon>
+                      <ListItemText primary="Idosos Acamados" />
+                    </ListItem>
+                  </Link>
+
+                  <Link to="/leftover" className={classes.link}>
+                    <ListItem button className={classes.nested}>
+                      <ListItemIcon>
+                        <img src={vaccineIcon} alt="OldmanIcon" />
+                      </ListItemIcon>
+                      <ListItemText primary="Sobra de Vacinas" />
+                    </ListItem>
+                  </Link>
+                </List>
+              </Collapse>
             </List>
 
             {user && user.admin && (

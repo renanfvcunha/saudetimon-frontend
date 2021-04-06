@@ -84,6 +84,9 @@ const useStyles = makeStyles(theme =>
       marginLeft: 5,
       color: '#fff',
     },
+    nested: {
+      paddingLeft: theme.spacing(4),
+    },
   })
 );
 
