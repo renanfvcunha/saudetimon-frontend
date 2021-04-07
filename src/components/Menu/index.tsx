@@ -140,12 +140,12 @@ const Menu: React.FC = () => {
                   button
                   onClick={() => {
                     setChangePathName(true);
-                    setPageTitle('Novos Pacientes');
+                    setPageTitle('Pacientes');
                   }}
                   selected={pathName === '/patients/new'}
                 >
                   <ListItemIcon>
-                    <img src={patientIcon} alt="OldmanIcon" />
+                    <img src={patientIcon} alt="Patient Icon" />
                   </ListItemIcon>
                   <ListItemText primary="Novos Pacientes" />
                 </ListItem>

@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React, {
   useState,
   useEffect,
@@ -7,6 +8,7 @@ import React, {
   RefObject,
   ChangeEvent,
 } from 'react';
+import { useHistory } from 'react-router-dom';
 import MaterialTable, { Icons, MTableToolbar } from 'material-table';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import {
@@ -23,14 +25,16 @@ import {
 
 import useStyles from './styles';
 import defaultStyles from '../../utils/defaultStyles';
-import IGroup from '../../typescript/IGroup';
 import subHours from '../../utils/subHours';
+import masks from '../../utils/masks';
+import IGroup from '../../typescript/IGroup';
 import PatientContext from '../../contexts/patientContext';
 
 const NewPatients: React.FC = () => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
   const { getGroupsCall, getPatientsCall } = useContext(PatientContext);
+  const history = useHistory();
 
   const [groups, setGroups] = useState<IGroup[]>();
   const [selectedGroup, setSelectedGroup] = useState('');
@@ -99,12 +103,16 @@ const NewPatients: React.FC = () => {
                 field: 'cpf',
                 type: 'string',
                 align: 'left',
+                render: rowData => <>{masks.cpfMask(rowData.cpf)}</>,
               },
               {
                 title: 'Criado Em',
                 field: 'createdAt',
                 type: 'datetime',
                 align: 'left',
+                render: rowData => (
+                  <>{subHours(rowData.createdAt).toLocaleString()}</>
+                ),
               },
             ]}
             data={query =>
@@ -112,10 +120,7 @@ const NewPatients: React.FC = () => {
                 getPatientsCall(query.pageSize, query.page, selectedGroup)
                   .then(patient => {
                     resolve({
-                      data: patient.data.map(ptt => ({
-                        ...ptt,
-                        createdAt: subHours(ptt.createdAt),
-                      })),
+                      data: patient.data,
                       page: patient.page,
                       totalCount: patient.totalCount,
                     });
@@ -137,7 +142,9 @@ const NewPatients: React.FC = () => {
               {
                 icon: () => <Visibility />,
                 tooltip: 'Visualizar Dados',
-                onClick: () => alert('Visualizado'),
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onClick: (e, rowData: Record<string, any>) =>
+                  history.push(`/patients/${rowData.id}`),
               },
             ]}
             localization={{
