@@ -15,6 +15,7 @@ interface PatientContextData {
     page: number,
     idGroup: string
   ) => Promise<IPagination>;
+  showPatientCall: (id: string) => Promise<IPatient>;
 }
 
 const PatientContext = createContext<PatientContextData>(
@@ -60,11 +61,26 @@ export const PatientProvider: React.FC = ({ children }) => {
     }
   };
 
+  const showPatientCall = async (id: string) => {
+    try {
+      const response: AxiosResponse<IPatient> = await api.get(`patients/${id}`);
+
+      return response.data;
+    } catch (err) {
+      catchHandler(
+        err,
+        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
+      );
+      return err;
+    }
+  };
+
   return (
     <PatientContext.Provider
       value={{
         getGroupsCall,
         getPatientsCall,
+        showPatientCall,
       }}
     >
       {children}

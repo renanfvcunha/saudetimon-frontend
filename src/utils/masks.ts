@@ -11,8 +11,8 @@ export default {
       .replace(/(\d{3})(\d{1,2})/, '$1-$2')
       /* captura 2 numeros seguidos de um traço e não deixa ser digitado mais nada */
       .replace(/(-\d{2})\d+?$/, '$1'),
-  telefoneMask: (telefone: string): string =>
-    telefone
+  phoneMask: (phone: string): string =>
+    phone
       .replace(/\D/g, '')
       .replace(/(\d{2})(\d)/, '($1) $2')
       .replace(/(\d)(\d{4})$/, '$1-$2'),
