@@ -30,7 +30,7 @@ import masks from '../../utils/masks';
 import IGroup from '../../typescript/IGroup';
 import PatientContext from '../../contexts/patientContext';
 
-const NewPatients: React.FC = () => {
+const ApprovedPatients: React.FC = () => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
   const { getGroupsCall, getPatientsCall } = useContext(PatientContext);
@@ -77,7 +77,7 @@ const NewPatients: React.FC = () => {
       <div className={classes.tableBox}>
         <div className={classes.table}>
           <MaterialTable
-            title="Lista de Novos Pacientes"
+            title="Lista de Pacientes Aprovados"
             tableRef={tableRef}
             columns={[
               {
@@ -117,7 +117,7 @@ const NewPatients: React.FC = () => {
             ]}
             data={query =>
               new Promise((resolve, reject) => {
-                getPatientsCall(query.pageSize, query.page, '1', selectedGroup)
+                getPatientsCall(query.pageSize, query.page, '2', selectedGroup)
                   .then(patient => {
                     resolve({
                       data: patient.data,
@@ -206,4 +206,4 @@ const NewPatients: React.FC = () => {
   );
 };
 
-export default NewPatients;
+export default ApprovedPatients;

@@ -6,11 +6,13 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Patients from './pages/NewPatients';
 import ShowPatient from './pages/ShowPatient';
+import ApprovedPatients from './pages/ApprovedPatients';
 
 const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={Home} />
     <Route path="/patients/new" component={Patients} />
+    <Route path="/patients/approved" component={ApprovedPatients} />
     <Route path="/patients/:id" component={ShowPatient} />
     {/* <PrivateRoute path="/users" component={Users} /> */}
 

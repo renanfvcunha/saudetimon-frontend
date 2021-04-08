@@ -12,6 +12,7 @@ interface PatientContextData {
   getPatientsCall: (
     perPage: number,
     page: number,
+    idStatus: string,
     idGroup: string
   ) => Promise<IPagination>;
   showPatientCall: (id: string) => Promise<IPatient>;
@@ -41,11 +42,12 @@ export const PatientProvider: React.FC = ({ children }) => {
   const getPatientsCall = async (
     perPage: number,
     page: number,
+    idStatus: string,
     idGroup: string
   ) => {
     try {
       const response: AxiosResponse<IPatient[]> = await api.get(
-        `/patients?per_page=${perPage}&page=${page}&idGroup=${idGroup}`
+        `/patients?per_page=${perPage}&page=${page}&idStatus=${idStatus}&idGroup=${idGroup}`
       );
 
       return {

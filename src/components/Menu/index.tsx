@@ -23,6 +23,7 @@ import {
   Home,
   ExitToApp,
   Group,
+  AssignmentTurnedIn,
 } from '@material-ui/icons';
 
 import useStyles, { ThemeColor } from './styles';
@@ -50,12 +51,12 @@ const Menu: React.FC = () => {
   };
 
   useLayoutEffect(() => {
-    setPathName(window.location.pathname.split('/')[1]);
+    setPathName(window.location.pathname.substr(1));
   }, []);
 
   useLayoutEffect(() => {
     if (changePathName) {
-      setPathName(window.location.pathname.split('/')[1]);
+      setPathName(window.location.pathname.substr(1));
       setChangePathName(false);
     }
   }, [changePathName]);
@@ -142,12 +143,28 @@ const Menu: React.FC = () => {
                     setChangePathName(true);
                     setPageTitle('Pacientes');
                   }}
-                  selected={pathName === '/patients/new'}
+                  selected={pathName === 'patients/new'}
                 >
                   <ListItemIcon>
                     <img src={patientIcon} alt="Patient Icon" />
                   </ListItemIcon>
                   <ListItemText primary="Novos Pacientes" />
+                </ListItem>
+              </Link>
+
+              <Link to="/patients/approved" className={classes.link}>
+                <ListItem
+                  button
+                  onClick={() => {
+                    setChangePathName(true);
+                    setPageTitle('Pacientes');
+                  }}
+                  selected={pathName.startsWith('patients/approved')}
+                >
+                  <ListItemIcon>
+                    <AssignmentTurnedIn className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText primary="Pacientes Aprovados" />
                 </ListItem>
               </Link>
             </List>
