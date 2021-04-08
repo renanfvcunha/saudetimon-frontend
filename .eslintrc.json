@@ -50,6 +50,8 @@
         "react/jsx-wrap-multilines": "off",
         "react/jsx-props-no-spreading": "off",
         "react/jsx-curly-newline": "off",
-        "react/prop-types": "warn"
+        "react/prop-types": "warn",
+        "no-empty-funcion": "off",
+        "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }]
     }
 }

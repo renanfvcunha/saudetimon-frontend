@@ -1,33 +1,75 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Divider, Fab, Tooltip, Typography } from '@material-ui/core';
+import {
+  Button,
+  Divider,
+  Fab,
+  Tooltip,
+  Typography,
+  ThemeProvider,
+} from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import ModalImage from 'react-modal-image';
+import { toast } from 'react-toastify';
 
-import useStyles from './styles';
+import useStyles, { ActButtons } from './styles';
 import Container from '../../components/Container';
 import PatientContext from '../../contexts/patientContext';
 import IPatient from '../../typescript/IPatient';
 import masks from '../../utils/masks';
 import subHours from '../../utils/subHours';
+import ModalConfirmation from '../../components/ModalConfirmation';
 
 const ShowPatient: React.FC = () => {
   const classes = useStyles();
   const { id } = useParams<{ id: string }>();
-  const { showPatientCall } = useContext(PatientContext);
+  const { showPatientCall, handleApprovePatientCall } = useContext(
+    PatientContext
+  );
   const history = useHistory();
 
   const [patient, setPatient] = useState<IPatient>();
+  const [modalConfirmation, setModalConfirmation] = useState<{
+    open: boolean;
+    msg: string;
+    confirm: string;
+    title?: string;
+    confirmAction?: () => void;
+  }>({
+    open: false,
+    msg: '',
+    confirm: '',
+  });
+
+  const handleCloseModal = () => {
+    if (modalConfirmation) {
+      setModalConfirmation({
+        open: false,
+        msg: '',
+        confirm: '',
+        title: undefined,
+        confirmAction: undefined,
+      });
+    }
+  };
+
+  const showPatient = useCallback(async () => {
+    const data = await showPatientCall(id);
+
+    setPatient(data);
+  }, [id, showPatientCall]);
+
+  const handleApprovePatient = async () => {
+    const msg = await handleApprovePatientCall(id);
+
+    toast.success(msg);
+    handleCloseModal();
+    showPatient();
+  };
 
   useEffect(() => {
-    const showPatient = async () => {
-      const data = await showPatientCall(id);
-
-      setPatient(data);
-    };
-
     showPatient();
-  }, [id, showPatientCall]);
+  }, [showPatient]);
 
   return (
     <main className={classes.content}>
@@ -48,7 +90,7 @@ const ShowPatient: React.FC = () => {
         </Typography>
 
         {patient && (
-          <div>
+          <>
             <Typography component="h2" variant="h5">
               Dados Gerais
             </Typography>
@@ -329,9 +371,51 @@ const ShowPatient: React.FC = () => {
                   )}
                 </div>
               )}
-          </div>
+
+            {patient.patientStatus.status.id === 1 && (
+              <div className={classes.actButtons}>
+                <ThemeProvider theme={ActButtons}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.actBtn}
+                    onClick={() =>
+                      setModalConfirmation({
+                        open: true,
+                        msg: `Deseja aprovar o cadastro de ${patient.name}?`,
+                        confirm: 'Aprovar',
+                        title: 'Aprovar Cadastro',
+                        confirmAction: handleApprovePatient,
+                      })
+                    }
+                  >
+                    Aprovar Cadastro
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.actBtn}
+                  >
+                    Reprovar Cadastro
+                  </Button>
+                </ThemeProvider>
+              </div>
+            )}
+          </>
         )}
       </Container>
+
+      <ThemeProvider theme={ActButtons}>
+        <ModalConfirmation
+          open={modalConfirmation.open}
+          close={handleCloseModal}
+          title={modalConfirmation.title}
+          msg={modalConfirmation.msg}
+          cancel="Cancelar"
+          confirm={modalConfirmation.confirm}
+          confirmAction={modalConfirmation.confirmAction}
+        />
+      </ThemeProvider>
     </main>
   );
 };

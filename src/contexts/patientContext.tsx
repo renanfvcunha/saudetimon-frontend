@@ -6,7 +6,6 @@ import api from '../services/api';
 import IGroup from '../typescript/IGroup';
 import IPatient, { IPagination } from '../typescript/IPatient';
 import catchHandler from '../utils/catchHandler';
-// import catchHandler from '../utils/catchHandler';
 
 interface PatientContextData {
   getGroupsCall: () => Promise<IGroup[]>;
@@ -16,6 +15,7 @@ interface PatientContextData {
     idGroup: string
   ) => Promise<IPagination>;
   showPatientCall: (id: string) => Promise<IPatient>;
+  handleApprovePatientCall: (id: string) => Promise<string>;
 }
 
 const PatientContext = createContext<PatientContextData>(
@@ -75,12 +75,32 @@ export const PatientProvider: React.FC = ({ children }) => {
     }
   };
 
+  const handleApprovePatientCall = async (id: string) => {
+    try {
+      const response: AxiosResponse<{ msg: string }> = await api.patch(
+        `/patients/status/${id}`,
+        {
+          idStatus: 2,
+        }
+      );
+
+      return response.data.msg;
+    } catch (err) {
+      catchHandler(
+        err,
+        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
+      );
+      return err;
+    }
+  };
+
   return (
     <PatientContext.Provider
       value={{
         getGroupsCall,
         getPatientsCall,
         showPatientCall,
+        handleApprovePatientCall,
       }}
     >
       {children}
