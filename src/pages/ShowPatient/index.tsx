@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Divider, Fab, Tooltip, Typography } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
+import ModalImage from 'react-modal-image';
 
 import useStyles from './styles';
 import Container from '../../components/Container';
@@ -133,11 +134,13 @@ const ShowPatient: React.FC = () => {
               {patient.idDocFront.startsWith('IMG') ? (
                 <>
                   <br />
-                  <img
-                    src={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocFront}`}
-                    alt="Doc Id Front"
-                    style={{ maxWidth: 400 }}
-                  />
+                  <div className={classes.imgThumb}>
+                    <ModalImage
+                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocFront}`}
+                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocFront}`}
+                      alt={patient.idDocFront}
+                    />
+                  </div>
                 </>
               ) : (
                 <span className={classes.value}>
@@ -156,13 +159,17 @@ const ShowPatient: React.FC = () => {
               <span className={classes.key}>
                 Documento de Identidade (Verso):
               </span>
-              <br />
               {patient.idDocVerse.startsWith('IMG') ? (
-                <img
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocVerse}`}
-                  alt="Doc Id Front"
-                  style={{ maxWidth: 400 }}
-                />
+                <>
+                  <br />
+                  <div className={classes.imgThumb}>
+                    <ModalImage
+                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocVerse}`}
+                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocVerse}`}
+                      alt={patient.idDocVerse}
+                    />
+                  </div>
+                </>
               ) : (
                 <span className={classes.value}>
                   <a
@@ -181,11 +188,13 @@ const ShowPatient: React.FC = () => {
               {patient.addressProof.startsWith('IMG') ? (
                 <>
                   <br />
-                  <img
-                    src={`${process.env.REACT_APP_API_URL}/uploads/${patient.addressProof}`}
-                    alt="Doc Id Front"
-                    style={{ maxWidth: 400 }}
-                  />
+                  <div className={classes.imgThumb}>
+                    <ModalImage
+                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.addressProof}`}
+                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.addressProof}`}
+                      alt={patient.addressProof}
+                    />
+                  </div>
                 </>
               ) : (
                 <span className={classes.value}>
@@ -205,11 +214,13 @@ const ShowPatient: React.FC = () => {
               {patient.photo.startsWith('IMG') ? (
                 <>
                   <br />
-                  <img
-                    src={`${process.env.REACT_APP_API_URL}/uploads/${patient.photo}`}
-                    alt="Doc Id Front"
-                    style={{ maxWidth: 400 }}
-                  />
+                  <div className={classes.imgThumb}>
+                    <ModalImage
+                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.photo}`}
+                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.photo}`}
+                      alt={patient.photo}
+                    />
+                  </div>
                 </>
               ) : (
                 <span className={classes.value}>
@@ -235,11 +246,13 @@ const ShowPatient: React.FC = () => {
                   ) ? (
                     <>
                       <br />
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalReport}`}
-                        alt="Doc Id Front"
-                        style={{ maxWidth: 400 }}
-                      />
+                      <div className={classes.imgThumb}>
+                        <ModalImage
+                          small={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalReport}`}
+                          large={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalReport}`}
+                          alt={patient.comorbidityPatient.medicalReport}
+                        />
+                      </div>
                     </>
                   ) : (
                     <span className={classes.value}>
@@ -264,11 +277,13 @@ const ShowPatient: React.FC = () => {
                   ) ? (
                     <>
                       <br />
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalAuthorization}`}
-                        alt="Doc Id Front"
-                        style={{ maxWidth: 400 }}
-                      />
+                      <div className={classes.imgThumb}>
+                        <ModalImage
+                          small={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalAuthorization}`}
+                          large={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalAuthorization}`}
+                          alt={patient.comorbidityPatient.medicalAuthorization}
+                        />
+                      </div>
                     </>
                   ) : (
                     <span className={classes.value}>
@@ -293,11 +308,13 @@ const ShowPatient: React.FC = () => {
                   ) ? (
                     <>
                       <br />
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalPrescription}`}
-                        alt="Doc Id Front"
-                        style={{ maxWidth: 400 }}
-                      />
+                      <div className={classes.imgThumb}>
+                        <ModalImage
+                          small={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalPrescription}`}
+                          large={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalPrescription}`}
+                          alt={patient.comorbidityPatient.medicalPrescription}
+                        />
+                      </div>
                     </>
                   ) : (
                     <span className={classes.value}>

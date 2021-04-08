@@ -24,6 +24,9 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 8,
     fontWeight: 500,
   },
+  imgThumb: {
+    maxWidth: 200,
+  },
   mt2: {
     marginTop: '2rem',
   },
