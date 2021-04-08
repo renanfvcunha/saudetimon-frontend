@@ -7,9 +7,11 @@ import {
   Tooltip,
   Typography,
   ThemeProvider,
+  TextField,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import ModalImage from 'react-modal-image';
+import clsx from 'clsx';
 import { toast } from 'react-toastify';
 
 import useStyles, { ActButtons } from './styles';
@@ -19,27 +21,36 @@ import IPatient from '../../typescript/IPatient';
 import masks from '../../utils/masks';
 import subHours from '../../utils/subHours';
 import ModalConfirmation from '../../components/ModalConfirmation';
+import DefaultModal from '../../components/DefaultModal';
+
+interface IModalConfirmation {
+  open: boolean;
+  msg: string;
+  confirm: string;
+  title?: string;
+  confirmAction?: () => void;
+}
 
 const ShowPatient: React.FC = () => {
   const classes = useStyles();
   const { id } = useParams<{ id: string }>();
-  const { showPatientCall, handleApprovePatientCall } = useContext(
-    PatientContext
-  );
+  const {
+    showPatientCall,
+    handleApprovePatientCall,
+    handleDisapprovePatientCall,
+  } = useContext(PatientContext);
   const history = useHistory();
 
   const [patient, setPatient] = useState<IPatient>();
-  const [modalConfirmation, setModalConfirmation] = useState<{
-    open: boolean;
-    msg: string;
-    confirm: string;
-    title?: string;
-    confirmAction?: () => void;
-  }>({
+  const [modalConfirmation, setModalConfirmation] = useState<
+    IModalConfirmation
+  >({
     open: false,
     msg: '',
     confirm: '',
   });
+  const [modalDisapprove, setModalDisapprove] = useState(false);
+  const [disapproveMsg, setDisapproveMsg] = useState('');
 
   const handleCloseModal = () => {
     if (modalConfirmation) {
@@ -51,6 +62,10 @@ const ShowPatient: React.FC = () => {
         confirmAction: undefined,
       });
     }
+
+    if (modalDisapprove) {
+      setModalDisapprove(false);
+    }
   };
 
   const showPatient = useCallback(async () => {
@@ -61,6 +76,14 @@ const ShowPatient: React.FC = () => {
 
   const handleApprovePatient = async () => {
     const msg = await handleApprovePatientCall(id);
+
+    toast.success(msg);
+    handleCloseModal();
+    showPatient();
+  };
+
+  const handleDisapprovePatient = async () => {
+    const msg = await handleDisapprovePatientCall(id, disapproveMsg);
 
     toast.success(msg);
     handleCloseModal();
@@ -130,7 +153,13 @@ const ShowPatient: React.FC = () => {
             </div>
             <div>
               <span className={classes.key}>Status:</span>
-              <span className={classes.value}>
+              <span
+                className={clsx(classes.value, {
+                  [classes.colorAmber]: patient.patientStatus.status.id === 1,
+                  [classes.colorGreen]: patient.patientStatus.status.id === 2,
+                  [classes.colorRed]: patient.patientStatus.status.id === 3,
+                })}
+              >
                 <strong>{patient.patientStatus.status.status}</strong>
               </span>
             </div>
@@ -395,6 +424,7 @@ const ShowPatient: React.FC = () => {
                     variant="contained"
                     color="secondary"
                     className={classes.actBtn}
+                    onClick={() => setModalDisapprove(true)}
                   >
                     Reprovar Cadastro
                   </Button>
@@ -416,6 +446,35 @@ const ShowPatient: React.FC = () => {
           confirmAction={modalConfirmation.confirmAction}
         />
       </ThemeProvider>
+
+      <DefaultModal open={modalDisapprove} close={handleCloseModal}>
+        <Typography component="h1" variant="h6" style={{ fontWeight: 500 }}>
+          Reprovar Cadastro
+        </Typography>
+
+        <TextField
+          label="Motivo da Reprovação"
+          multiline
+          rows={3}
+          className={classes.disapproveMsgField}
+          variant="outlined"
+          value={disapproveMsg}
+          onChange={e => setDisapproveMsg(e.target.value)}
+          helperText="O motivo da reprovação ficará visível para o paciente
+          para que seu cadastro possa ser atualizado."
+        />
+
+        <ThemeProvider theme={ActButtons}>
+          <div className={clsx([classes.actButtons, classes.mt1])}>
+            <Button color="primary" onClick={handleCloseModal}>
+              Cancelar
+            </Button>
+            <Button color="secondary" onClick={handleDisapprovePatient}>
+              Reprovar
+            </Button>
+          </div>
+        </ThemeProvider>
+      </DefaultModal>
     </main>
   );
 };

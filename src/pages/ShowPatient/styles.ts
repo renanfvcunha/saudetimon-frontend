@@ -1,5 +1,5 @@
 import { createMuiTheme, makeStyles } from '@material-ui/core';
-import { green, red } from '@material-ui/core/colors';
+import { green, red, amber } from '@material-ui/core/colors';
 
 import defaultStyles from '../../utils/defaultStyles';
 
@@ -28,18 +28,34 @@ const useStyles = makeStyles(theme => ({
   imgThumb: {
     maxWidth: 200,
   },
-  mt2: {
-    marginTop: '2rem',
-  },
-  mb1: {
-    marginBottom: '1rem',
-  },
   actButtons: {
     display: 'flex',
     justifyContent: 'flex-end',
   },
   actBtn: {
     margin: '0 4px',
+  },
+  disapproveMsgField: {
+    width: 400,
+    marginTop: '1rem',
+  },
+  mt2: {
+    marginTop: '2rem',
+  },
+  mb1: {
+    marginBottom: '1rem',
+  },
+  mt1: {
+    marginTop: '1rem',
+  },
+  colorRed: {
+    color: red['600'],
+  },
+  colorAmber: {
+    color: amber['600'],
+  },
+  colorGreen: {
+    color: green['600'],
   },
 }));
 

@@ -16,6 +16,7 @@ interface PatientContextData {
   ) => Promise<IPagination>;
   showPatientCall: (id: string) => Promise<IPatient>;
   handleApprovePatientCall: (id: string) => Promise<string>;
+  handleDisapprovePatientCall: (id: string, message: string) => Promise<string>;
 }
 
 const PatientContext = createContext<PatientContextData>(
@@ -94,6 +95,26 @@ export const PatientProvider: React.FC = ({ children }) => {
     }
   };
 
+  const handleDisapprovePatientCall = async (id: string, message: string) => {
+    try {
+      const response: AxiosResponse<{ msg: string }> = await api.patch(
+        `/patients/status/${id}`,
+        {
+          idStatus: 3,
+          message,
+        }
+      );
+
+      return response.data.msg;
+    } catch (err) {
+      catchHandler(
+        err,
+        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
+      );
+      return err;
+    }
+  };
+
   return (
     <PatientContext.Provider
       value={{
@@ -101,6 +122,7 @@ export const PatientProvider: React.FC = ({ children }) => {
         getPatientsCall,
         showPatientCall,
         handleApprovePatientCall,
+        handleDisapprovePatientCall,
       }}
     >
       {children}
