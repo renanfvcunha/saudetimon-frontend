@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import api from '../services/api';
 import IGroup from '../typescript/IGroup';
 import IPatient, { IPagination } from '../typescript/IPatient';
-import catchHandler from '../utils/catchHandler';
 
 interface PatientContextData {
   getGroupsCall: () => Promise<IGroup[]>;
@@ -26,17 +25,9 @@ const PatientContext = createContext<PatientContextData>(
 
 export const PatientProvider: React.FC = ({ children }) => {
   const getGroupsCall = async () => {
-    try {
-      const response: AxiosResponse<IGroup[]> = await api.get('/groups');
+    const response: AxiosResponse<IGroup[]> = await api.get('/groups');
 
-      return response.data;
-    } catch (err) {
-      catchHandler(
-        err,
-        'Não foi possível listar os grupos de pacientes. Tente novamente ou contate o suporte.'
-      );
-      return err;
-    }
+    return response.data;
   };
 
   const getPatientsCall = async (
@@ -45,76 +36,44 @@ export const PatientProvider: React.FC = ({ children }) => {
     idStatus: string,
     idGroup: string
   ) => {
-    try {
-      const response: AxiosResponse<IPatient[]> = await api.get(
-        `/patients?per_page=${perPage}&page=${page}&idStatus=${idStatus}&idGroup=${idGroup}`
-      );
+    const response: AxiosResponse<IPatient[]> = await api.get(
+      `/patients?per_page=${perPage}&page=${page}&idStatus=${idStatus}&idGroup=${idGroup}`
+    );
 
-      return {
-        data: response.data,
-        page: Number(response.headers.page),
-        totalCount: Number(response.headers['total-count']),
-      };
-    } catch (err) {
-      catchHandler(
-        err,
-        'Erro ao listar pacientes. Tente novamente ou contate o suporte.'
-      );
-      return err;
-    }
+    return {
+      data: response.data,
+      page: Number(response.headers.page),
+      totalCount: Number(response.headers['total-count']),
+    };
   };
 
   const showPatientCall = async (id: string) => {
-    try {
-      const response: AxiosResponse<IPatient> = await api.get(`patients/${id}`);
+    const response: AxiosResponse<IPatient> = await api.get(`patients/${id}`);
 
-      return response.data;
-    } catch (err) {
-      catchHandler(
-        err,
-        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
-      );
-      return err;
-    }
+    return response.data;
   };
 
   const handleApprovePatientCall = async (id: string) => {
-    try {
-      const response: AxiosResponse<{ msg: string }> = await api.patch(
-        `/patients/status/${id}`,
-        {
-          idStatus: 2,
-        }
-      );
+    const response: AxiosResponse<{ msg: string }> = await api.patch(
+      `/patients/status/${id}`,
+      {
+        idStatus: 2,
+      }
+    );
 
-      return response.data.msg;
-    } catch (err) {
-      catchHandler(
-        err,
-        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
-      );
-      return err;
-    }
+    return response.data.msg;
   };
 
   const handleDisapprovePatientCall = async (id: string, message: string) => {
-    try {
-      const response: AxiosResponse<{ msg: string }> = await api.patch(
-        `/patients/status/${id}`,
-        {
-          idStatus: 3,
-          message,
-        }
-      );
+    const response: AxiosResponse<{ msg: string }> = await api.patch(
+      `/patients/status/${id}`,
+      {
+        idStatus: 3,
+        message,
+      }
+    );
 
-      return response.data.msg;
-    } catch (err) {
-      catchHandler(
-        err,
-        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
-      );
-      return err;
-    }
+    return response.data.msg;
   };
 
   return (

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { AxiosResponse } from 'axios';
 
 import api from '../services/api';
-import catchHandler from '../utils/catchHandler';
 import IUser, { IPagination } from '../typescript/IUser';
 
 interface UserContextData {
@@ -21,23 +20,15 @@ const UserContext = createContext<UserContextData>({} as UserContextData);
 
 export const UserProvider: React.FC = ({ children }) => {
   const getUsersCall = async (perPage: number, page: number) => {
-    try {
-      const response: AxiosResponse<IUser[]> = await api.get(
-        `/users?per_page=${perPage}&page=${page}`
-      );
+    const response: AxiosResponse<IUser[]> = await api.get(
+      `/users?per_page=${perPage}&page=${page}`
+    );
 
-      return {
-        data: response.data,
-        page: Number(response.headers.page),
-        totalCount: Number(response.headers['total-count']),
-      };
-    } catch (err) {
-      catchHandler(
-        err,
-        'Não foi possível listar os usuários. Tente novamente ou contate o suporte.'
-      );
-      return err;
-    }
+    return {
+      data: response.data,
+      page: Number(response.headers.page),
+      totalCount: Number(response.headers['total-count']),
+    };
   };
 
   const createUserCall = async (

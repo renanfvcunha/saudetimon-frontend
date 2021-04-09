@@ -6,13 +6,12 @@ import React, {
   createRef,
   forwardRef,
   RefObject,
-  useCallback,
+  ChangeEvent,
 } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Fab, Tooltip } from '@material-ui/core';
 import MaterialTable, { Icons, MTableToolbar } from 'material-table';
+import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import {
-  Add,
   ArrowDownward,
   ChevronLeft,
   ChevronRight,
@@ -23,36 +22,33 @@ import {
   Search,
   Visibility,
 } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 
 import useStyles from './styles';
 import defaultStyles from '../../utils/defaultStyles';
 import subHours from '../../utils/subHours';
-import UserContext from '../../contexts/userContext';
-import NewUser from './NewUser/index';
+import masks from '../../utils/masks';
+import IGroup from '../../typescript/IGroup';
+import PatientContext from '../../contexts/patientContext';
 import catchHandler from '../../utils/catchHandler';
 
-const Users: React.FC = () => {
+interface Props {
+  tableTitle: string;
+  idGroup: string;
+}
+
+const Patients: React.FC<Props> = ({ tableTitle, idGroup }) => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
-  const { getUsersCall } = useContext(UserContext);
+  const { getGroupsCall, getPatientsCall } = useContext(PatientContext);
   const history = useHistory();
 
-  const [newUserOpen, setNewUserOpen] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [groups, setGroups] = useState<IGroup[]>();
+  const [selectedGroup, setSelectedGroup] = useState('');
 
-  const setSuccessTrue = () => {
-    setSuccess(true);
+  const handleChangeGroup = (e: ChangeEvent<{ value: unknown }>) => {
+    setSelectedGroup(e.target.value as string);
   };
-
-  const handleCloseModal = useCallback(() => {
-    if (newUserOpen) {
-      setNewUserOpen(false);
-    }
-  }, [newUserOpen]);
-
-  const refreshTable = useCallback(() => {
-    tableRef.current?.onQueryChange();
-  }, [tableRef]);
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -69,12 +65,25 @@ const Users: React.FC = () => {
   };
 
   useEffect(() => {
-    if (success) {
-      handleCloseModal();
-      refreshTable();
-      setSuccess(false);
-    }
-  }, [handleCloseModal, refreshTable, success]);
+    const getGroups = async () => {
+      try {
+        const data = await getGroupsCall();
+
+        setGroups(data);
+      } catch (err) {
+        catchHandler(
+          err,
+          'Erro ao listar grupos. Tente novamente ou contate o suporte.'
+        );
+      }
+    };
+
+    getGroups();
+  }, [getGroupsCall]);
+
+  useEffect(() => {
+    tableRef.current?.onQueryChange();
+  }, [tableRef, selectedGroup]);
 
   return (
     <main className={classes.content}>
@@ -82,7 +91,7 @@ const Users: React.FC = () => {
       <div className={classes.tableBox}>
         <div className={classes.table}>
           <MaterialTable
-            title="Lista de Usuários"
+            title={tableTitle}
             tableRef={tableRef}
             columns={[
               {
@@ -104,19 +113,11 @@ const Users: React.FC = () => {
                 align: 'left',
               },
               {
-                title: 'Nome de Usuário',
-                field: 'username',
+                title: 'CPF',
+                field: 'cpf',
                 type: 'string',
                 align: 'left',
-              },
-              {
-                title: 'Admin',
-                field: 'admin',
-                type: 'string',
-                align: 'left',
-                render: rowData => (
-                  <>{rowData.admin === true ? 'Sim' : 'Não'}</>
-                ),
+                render: rowData => <>{masks.cpfMask(rowData.cpf)}</>,
               },
               {
                 title: 'Criado Em',
@@ -130,19 +131,24 @@ const Users: React.FC = () => {
             ]}
             data={query =>
               new Promise((resolve, reject) => {
-                getUsersCall(query.pageSize, query.page)
-                  .then(user => {
+                getPatientsCall(
+                  query.pageSize,
+                  query.page,
+                  idGroup,
+                  selectedGroup
+                )
+                  .then(patient => {
                     resolve({
-                      data: user.data,
-                      page: user.page,
-                      totalCount: user.totalCount,
+                      data: patient.data,
+                      page: patient.page,
+                      totalCount: patient.totalCount,
                     });
                   })
                   .catch(err => {
                     reject(
                       catchHandler(
                         err,
-                        'Não foi possível listar os usuários. Tente novamente ou contate o suporte.'
+                        'Erro ao listar pacientes. Tente novamente ou contate o suporte.'
                       )
                     );
                   });
@@ -196,32 +202,37 @@ const Users: React.FC = () => {
             }}
             components={{
               Toolbar: props => (
-                <div>
+                <>
                   <MTableToolbar {...props} />
-                  <Tooltip
-                    title="Adicionar Usuário"
-                    aria-label="addUser"
-                    className={classes.addUserBtn}
-                    onClick={() => setNewUserOpen(true)}
-                  >
-                    <Fab color="primary" size="small">
-                      <Add />
-                    </Fab>
-                  </Tooltip>
-                </div>
+                  {groups && (
+                    <FormControl className={classes.selectGroups}>
+                      <InputLabel>Grupo</InputLabel>
+                      <Select
+                        value={selectedGroup}
+                        onChange={handleChangeGroup}
+                      >
+                        <MenuItem value="">Todos</MenuItem>
+                        {groups.map(group => (
+                          <MenuItem key={group.id} value={String(group.id)}>
+                            {group.group}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                </>
               ),
             }}
           />
         </div>
       </div>
-
-      <NewUser
-        open={newUserOpen}
-        close={handleCloseModal}
-        setSuccess={setSuccessTrue}
-      />
     </main>
   );
 };
 
-export default Users;
+Patients.propTypes = {
+  tableTitle: PropTypes.string.isRequired,
+  idGroup: PropTypes.string.isRequired,
+};
+
+export default Patients;

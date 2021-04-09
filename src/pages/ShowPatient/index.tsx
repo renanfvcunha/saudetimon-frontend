@@ -22,6 +22,7 @@ import masks from '../../utils/masks';
 import subHours from '../../utils/subHours';
 import ModalConfirmation from '../../components/ModalConfirmation';
 import DefaultModal from '../../components/DefaultModal';
+import catchHandler from '../../utils/catchHandler';
 
 interface IModalConfirmation {
   open: boolean;
@@ -69,25 +70,46 @@ const ShowPatient: React.FC = () => {
   };
 
   const showPatient = useCallback(async () => {
-    const data = await showPatientCall(id);
+    try {
+      const data = await showPatientCall(id);
 
-    setPatient(data);
+      setPatient(data);
+    } catch (err) {
+      catchHandler(
+        err,
+        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
+      );
+    }
   }, [id, showPatientCall]);
 
   const handleApprovePatient = async () => {
-    const msg = await handleApprovePatientCall(id);
+    try {
+      const msg = await handleApprovePatientCall(id);
 
-    toast.success(msg);
-    handleCloseModal();
-    showPatient();
+      toast.success(msg);
+      handleCloseModal();
+      showPatient();
+    } catch (err) {
+      catchHandler(
+        err,
+        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
+      );
+    }
   };
 
   const handleDisapprovePatient = async () => {
-    const msg = await handleDisapprovePatientCall(id, disapproveMsg);
+    try {
+      const msg = await handleDisapprovePatientCall(id, disapproveMsg);
 
-    toast.success(msg);
-    handleCloseModal();
-    showPatient();
+      toast.success(msg);
+      handleCloseModal();
+      showPatient();
+    } catch (err) {
+      catchHandler(
+        err,
+        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
+      );
+    }
   };
 
   useEffect(() => {
