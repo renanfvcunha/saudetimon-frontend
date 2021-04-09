@@ -52,6 +52,7 @@
         "react/jsx-curly-newline": "off",
         "react/prop-types": "warn",
         "no-empty-funcion": "off",
-        "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }]
+        "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }],
+        "react/jsx-one-expression-per-line": "off"
     }
 }

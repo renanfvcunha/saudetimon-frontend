@@ -1,4 +1,5 @@
-import { makeStyles } from '@material-ui/core';
+import { createMuiTheme, makeStyles } from '@material-ui/core';
+import { green, red } from '@material-ui/core/colors';
 
 import defaultStyles from '../../utils/defaultStyles';
 
@@ -35,5 +36,16 @@ const useStyles = makeStyles(theme => ({
     left: 190,
   },
 }));
+
+export const ActButtons = createMuiTheme({
+  palette: {
+    primary: {
+      main: red['600'],
+    },
+    secondary: {
+      main: green['600'],
+    },
+  },
+});
 
 export default useStyles;

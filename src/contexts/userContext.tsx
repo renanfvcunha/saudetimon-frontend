@@ -7,6 +7,7 @@ import IUser, { IPagination } from '../typescript/IUser';
 
 interface UserContextData {
   getUsersCall: (perPage: number, page: number) => Promise<IPagination>;
+  getUserCall: (id: string) => Promise<IUser>;
   createUserCall: (
     name: string,
     username: string,
@@ -14,6 +15,15 @@ interface UserContextData {
     password: string,
     passwordConf: string
   ) => Promise<string>;
+  updateUserCall: (
+    id: string,
+    name: string,
+    username: string,
+    admin: boolean,
+    password: string,
+    passwordConf: string
+  ) => Promise<string>;
+  deleteUserCall: (id: string) => Promise<string>;
 }
 
 const UserContext = createContext<UserContextData>({} as UserContextData);
@@ -29,6 +39,12 @@ export const UserProvider: React.FC = ({ children }) => {
       page: Number(response.headers.page),
       totalCount: Number(response.headers['total-count']),
     };
+  };
+
+  const getUserCall = async (id: string) => {
+    const response: AxiosResponse<IUser> = await api.get(`/users/${id}`);
+
+    return response.data;
   };
 
   const createUserCall = async (
@@ -49,11 +65,44 @@ export const UserProvider: React.FC = ({ children }) => {
     return response.data.msg;
   };
 
+  const updateUserCall = async (
+    id: string,
+    name: string,
+    username: string,
+    admin: boolean,
+    password: string,
+    passwordConf: string
+  ) => {
+    const response: AxiosResponse<{ msg: string }> = await api.put(
+      `/users/${id}`,
+      {
+        name,
+        username,
+        admin,
+        password,
+        passwordConf,
+      }
+    );
+
+    return response.data.msg;
+  };
+
+  const deleteUserCall = async (id: string) => {
+    const response: AxiosResponse<{ msg: string }> = await api.delete(
+      `/users/${id}`
+    );
+
+    return response.data.msg;
+  };
+
   return (
     <UserContext.Provider
       value={{
         getUsersCall,
+        getUserCall,
         createUserCall,
+        updateUserCall,
+        deleteUserCall,
       }}
     >
       {children}

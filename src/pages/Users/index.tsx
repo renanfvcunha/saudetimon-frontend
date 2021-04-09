@@ -8,8 +8,7 @@ import React, {
   RefObject,
   useCallback,
 } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Fab, Tooltip } from '@material-ui/core';
+import { Fab, Tooltip, ThemeProvider } from '@material-ui/core';
 import MaterialTable, { Icons, MTableToolbar } from 'material-table';
 import {
   Add,
@@ -21,38 +20,81 @@ import {
   LastPage,
   Refresh,
   Search,
-  Visibility,
+  Edit,
+  Delete,
 } from '@material-ui/icons';
+import { toast } from 'react-toastify';
 
-import useStyles from './styles';
+import useStyles, { ActButtons } from './styles';
 import defaultStyles from '../../utils/defaultStyles';
 import subHours from '../../utils/subHours';
 import UserContext from '../../contexts/userContext';
-import NewUser from './NewUser/index';
 import catchHandler from '../../utils/catchHandler';
+import NewUser from './NewUser';
+import EditUser from './EditUser';
+import ModalConfirmation from '../../components/ModalConfirmation';
+
+interface IModalConfirmation {
+  open: boolean;
+  msg: string | JSX.Element;
+  confirm: string;
+  title?: string;
+  confirmAction?: () => void;
+}
 
 const Users: React.FC = () => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
-  const { getUsersCall } = useContext(UserContext);
-  const history = useHistory();
+  const { getUsersCall, deleteUserCall } = useContext(UserContext);
 
   const [newUserOpen, setNewUserOpen] = useState(false);
+  const [editUserOpen, setEditUserOpen] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<string>();
+  const [modalConfirmation, setModalConfirmation] = useState<
+    IModalConfirmation
+  >({
+    open: false,
+    msg: '',
+    confirm: '',
+  });
 
   const setSuccessTrue = () => {
     setSuccess(true);
   };
 
   const handleCloseModal = useCallback(() => {
-    if (newUserOpen) {
-      setNewUserOpen(false);
-    }
-  }, [newUserOpen]);
+    if (newUserOpen) setNewUserOpen(false);
+
+    if (editUserOpen) setEditUserOpen(false);
+
+    if (modalConfirmation)
+      setModalConfirmation({
+        open: false,
+        msg: '',
+        confirm: '',
+      });
+  }, [editUserOpen, modalConfirmation, newUserOpen]);
 
   const refreshTable = useCallback(() => {
     tableRef.current?.onQueryChange();
   }, [tableRef]);
+
+  const removeUser = useCallback(async () => {
+    try {
+      if (selectedUser) {
+        const msg = await deleteUserCall(selectedUser);
+
+        toast.success(msg);
+        setSuccess(true);
+      }
+    } catch (err) {
+      catchHandler(
+        err,
+        'Não foi possível excluir o usuário. Tente novamente ou contate o suporte.'
+      );
+    }
+  }, [deleteUserCall, selectedUser]);
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -158,11 +200,31 @@ const Users: React.FC = () => {
                   tableRef.current && tableRef.current.onQueryChange(),
               },
               {
-                icon: () => <Visibility />,
-                tooltip: 'Visualizar Dados',
+                icon: () => <Edit />,
+                tooltip: 'Editar Usuário',
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onClick: (e, rowData: Record<string, any>) =>
-                  history.push(`/patients/${rowData.id}`),
+                onClick: (event, rowData: Record<string, any>) => {
+                  setEditUserOpen(true);
+                  setSelectedUser(rowData.id.toString());
+                },
+              },
+              {
+                icon: () => <Delete />,
+                tooltip: 'Remover Usuário',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onClick: (event, rowData: Record<string, any>) => {
+                  setSelectedUser(rowData.id.toString());
+                  setModalConfirmation({
+                    open: true,
+                    title: 'Alerta de Exclusão',
+                    msg: (
+                      <span>
+                        Deseja excluir <strong>{rowData.name}</strong>?
+                      </span>
+                    ),
+                    confirm: 'Excluir',
+                  });
+                },
               },
             ]}
             localization={{
@@ -220,6 +282,27 @@ const Users: React.FC = () => {
         close={handleCloseModal}
         setSuccess={setSuccessTrue}
       />
+
+      {selectedUser && (
+        <EditUser
+          open={editUserOpen}
+          close={handleCloseModal}
+          setSuccess={setSuccessTrue}
+          idUser={selectedUser}
+        />
+      )}
+
+      <ThemeProvider theme={ActButtons}>
+        <ModalConfirmation
+          open={modalConfirmation.open}
+          close={handleCloseModal}
+          title={modalConfirmation.title}
+          msg={modalConfirmation.msg}
+          cancel="Cancelar"
+          confirm={modalConfirmation.confirm}
+          confirmAction={removeUser}
+        />
+      </ThemeProvider>
     </main>
   );
 };
