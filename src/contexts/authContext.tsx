@@ -12,8 +12,12 @@ interface AuthContextData {
     name: string;
     admin: boolean;
   } | null;
-  signIn(username: string, password: string, remember: boolean): Promise<void>;
-  signOut(): void;
+  signIn: (
+    username: string,
+    password: string,
+    remember: boolean
+  ) => Promise<void>;
+  signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
