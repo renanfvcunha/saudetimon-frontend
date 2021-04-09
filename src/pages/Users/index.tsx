@@ -1,8 +1,18 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { useContext, createRef, forwardRef, RefObject } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  createRef,
+  forwardRef,
+  RefObject,
+  useCallback,
+} from 'react';
 import { useHistory } from 'react-router-dom';
-import MaterialTable, { Icons } from 'material-table';
+import { Fab, Tooltip } from '@material-ui/core';
+import MaterialTable, { Icons, MTableToolbar } from 'material-table';
 import {
+  Add,
   ArrowDownward,
   ChevronLeft,
   ChevronRight,
@@ -18,12 +28,30 @@ import useStyles from './styles';
 import defaultStyles from '../../utils/defaultStyles';
 import subHours from '../../utils/subHours';
 import UserContext from '../../contexts/userContext';
+import NewUser from './NewUser/index';
 
 const Users: React.FC = () => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
   const { getUsersCall } = useContext(UserContext);
   const history = useHistory();
+
+  const [newUserOpen, setNewUserOpen] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const setSuccessTrue = () => {
+    setSuccess(true);
+  };
+
+  const handleCloseModal = useCallback(() => {
+    if (newUserOpen) {
+      setNewUserOpen(false);
+    }
+  }, [newUserOpen]);
+
+  const refreshTable = useCallback(() => {
+    tableRef.current?.onQueryChange();
+  }, [tableRef]);
 
   const tableIcons: Icons = {
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -38,6 +66,14 @@ const Users: React.FC = () => {
       <ArrowDownward {...props} ref={ref} />
     )),
   };
+
+  useEffect(() => {
+    if (success) {
+      handleCloseModal();
+      refreshTable();
+      setSuccess(false);
+    }
+  }, [handleCloseModal, refreshTable, success]);
 
   return (
     <main className={classes.content}>
@@ -152,9 +188,32 @@ const Users: React.FC = () => {
               sorting: false,
               search: false,
             }}
+            components={{
+              Toolbar: props => (
+                <div>
+                  <MTableToolbar {...props} />
+                  <Tooltip
+                    title="Adicionar Usuário"
+                    aria-label="addUser"
+                    className={classes.addUserBtn}
+                    onClick={() => setNewUserOpen(true)}
+                  >
+                    <Fab color="primary" size="small">
+                      <Add />
+                    </Fab>
+                  </Tooltip>
+                </div>
+              ),
+            }}
           />
         </div>
       </div>
+
+      <NewUser
+        open={newUserOpen}
+        close={handleCloseModal}
+        setSuccess={setSuccessTrue}
+      />
     </main>
   );
 };

@@ -8,6 +8,13 @@ import IUser, { IPagination } from '../typescript/IUser';
 
 interface UserContextData {
   getUsersCall: (perPage: number, page: number) => Promise<IPagination>;
+  createUserCall: (
+    name: string,
+    username: string,
+    admin: boolean,
+    password: string,
+    passwordConf: string
+  ) => Promise<string>;
 }
 
 const UserContext = createContext<UserContextData>({} as UserContextData);
@@ -27,16 +34,35 @@ export const UserProvider: React.FC = ({ children }) => {
     } catch (err) {
       catchHandler(
         err,
-        'Não foi possível listar os grupos de pacientes. Tente novamente ou contate o suporte.'
+        'Não foi possível listar os usuários. Tente novamente ou contate o suporte.'
       );
       return err;
     }
+  };
+
+  const createUserCall = async (
+    name: string,
+    username: string,
+    admin: boolean,
+    password: string,
+    passwordConf: string
+  ) => {
+    const response: AxiosResponse<{ msg: string }> = await api.post('/users', {
+      name,
+      username,
+      admin,
+      password,
+      passwordConf,
+    });
+
+    return response.data.msg;
   };
 
   return (
     <UserContext.Provider
       value={{
         getUsersCall,
+        createUserCall,
       }}
     >
       {children}

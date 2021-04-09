@@ -29,6 +29,11 @@ const useStyles = makeStyles(theme => ({
     left: 450,
     top: 5,
   },
+  addUserBtn: {
+    position: 'absolute',
+    top: 12,
+    left: 190,
+  },
 }));
 
 export default useStyles;
