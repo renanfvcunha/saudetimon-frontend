@@ -6,7 +6,11 @@ import api from '../services/api';
 import IUser, { IPagination } from '../typescript/IUser';
 
 interface UserContextData {
-  getUsersCall: (perPage: number, page: number) => Promise<IPagination>;
+  getUsersCall: (
+    perPage: number,
+    page: number,
+    search: string
+  ) => Promise<IPagination>;
   getUserCall: (id: string) => Promise<IUser>;
   createUserCall: (
     name: string,
@@ -29,9 +33,13 @@ interface UserContextData {
 const UserContext = createContext<UserContextData>({} as UserContextData);
 
 export const UserProvider: React.FC = ({ children }) => {
-  const getUsersCall = async (perPage: number, page: number) => {
+  const getUsersCall = async (
+    perPage: number,
+    page: number,
+    search: string
+  ) => {
     const response: AxiosResponse<IUser[]> = await api.get(
-      `/users?per_page=${perPage}&page=${page}`
+      `/users?per_page=${perPage}&page=${page}&search=${search}`
     );
 
     return {

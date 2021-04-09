@@ -172,7 +172,7 @@ const Users: React.FC = () => {
             ]}
             data={query =>
               new Promise((resolve, reject) => {
-                getUsersCall(query.pageSize, query.page)
+                getUsersCall(query.pageSize, query.page, query.search)
                   .then(user => {
                     resolve({
                       data: user.data,
@@ -254,7 +254,6 @@ const Users: React.FC = () => {
                 color: '#fff',
               },
               sorting: false,
-              search: false,
             }}
             components={{
               Toolbar: props => (
