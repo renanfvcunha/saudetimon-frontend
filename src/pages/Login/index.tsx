@@ -12,7 +12,7 @@ import {
 
 import useStyles, { Purple } from './styles';
 import AuthContext from '../../contexts/authContext';
-import logoGED from '../../images/logoGED.png';
+import logo from '../../images/logo.png';
 
 const Login: React.FC = () => {
   const classes = useStyles();
@@ -38,7 +38,7 @@ const Login: React.FC = () => {
         <Container maxWidth="xs">
           <CssBaseline />
           <div className={classes.paper}>
-            <img src={logoGED} alt="Logo B2B Ged" width="200" height="200" />
+            <img src={logo} alt="Logo B2B Ged" width="400" />
             <form className={classes.form} onSubmit={handleSubmit}>
               {process.env.NODE_ENV !== 'production' && (
                 <TextField

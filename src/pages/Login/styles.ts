@@ -6,7 +6,7 @@ import defaultStyles from '../../utils/defaultStyles';
 const useStyles = makeStyles(theme => ({
   content: {
     minHeight: '100vh',
-    background: `url("${loginBackground}")`,
+    background: `url("${loginBackground}") #654d7d`,
     backgroundSize: 'cover',
   },
   paper: {

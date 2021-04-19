@@ -29,7 +29,7 @@ import {
 import useStyles, { ThemeColor } from './styles';
 import Routes from '../../routes';
 import authContext from '../../contexts/authContext';
-import logoGED from '../../images/logoGED.png';
+import logo from '../../images/logo.png';
 import patientIcon from '../../images/icons/patientIcon.svg';
 
 const Menu: React.FC = () => {
@@ -88,7 +88,7 @@ const Menu: React.FC = () => {
                 {pageTitle}
               </Typography>
             </div>
-            <img src={logoGED} alt="Logo B2B Juris" width="60" height="60" />
+            <img src={logo} alt="Logo B2B Juris" width="120" />
           </Toolbar>
         </AppBar>
         <BrowserRouter>
