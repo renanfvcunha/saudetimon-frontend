@@ -153,7 +153,9 @@ const ShowPatient: React.FC = () => {
             </div>
             <div>
               <span className={classes.key}>Cartão Sus:</span>
-              <span className={classes.value}>{patient.cpf}</span>
+              <span className={classes.value}>
+                {masks.susCardMask(patient.susCard)}
+              </span>
             </div>
             <div>
               <span className={classes.key}>Telefone:</span>
