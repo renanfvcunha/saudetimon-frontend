@@ -40,20 +40,18 @@ const Login: React.FC = () => {
           <div className={classes.paper}>
             <img src={logo} alt="Logo B2B Ged" width="400" />
             <form className={classes.form} onSubmit={handleSubmit}>
-              {process.env.NODE_ENV !== 'production' && (
-                <TextField
-                  variant="filled"
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Nome de usuário"
-                  autoFocus
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  className={classes.input}
-                  color="primary"
-                />
-              )}
+              <TextField
+                variant="filled"
+                margin="normal"
+                required
+                fullWidth
+                label="Nome de usuário"
+                autoFocus
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                className={classes.input}
+                color="primary"
+              />
 
               <TextField
                 variant="filled"
