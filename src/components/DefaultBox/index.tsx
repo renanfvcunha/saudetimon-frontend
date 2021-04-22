@@ -8,7 +8,7 @@ interface IBox {
   children: React.ReactNode;
 }
 
-const DefaultBox: React.FC<IBox> = ({ scrollable, children }) => {
+const DefaultBox: React.FC<IBox> = ({ scrollable = false, children }) => {
   const classes = useStyles();
   return (
     <div className={classes.contentBox}>

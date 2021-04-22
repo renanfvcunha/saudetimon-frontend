@@ -38,7 +38,7 @@ const Login: React.FC = () => {
         <Container maxWidth="xs">
           <CssBaseline />
           <div className={classes.paper}>
-            <img src={logo} alt="Logo B2B Ged" width="400" />
+            <img src={logo} alt="Logo Saúde Timon 24h" width="400" />
             <form className={classes.form} onSubmit={handleSubmit}>
               <TextField
                 variant="filled"

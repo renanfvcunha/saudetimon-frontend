@@ -8,7 +8,9 @@
         "plugin:react-hooks/recommended",
         "airbnb",
         "plugin:@typescript-eslint/recommended",
-        "plugin:prettierx/default"
+        "plugin:prettierx/default",
+        "plugin:prettierx/@typescript-eslint",
+        "plugin:prettierx/react"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -47,12 +49,9 @@
               "tsx": "never"
             }
         ],
-        "react/jsx-wrap-multilines": "off",
         "react/jsx-props-no-spreading": "off",
-        "react/jsx-curly-newline": "off",
         "react/prop-types": "warn",
         "no-empty-funcion": "off",
-        "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }],
-        "react/jsx-one-expression-per-line": "off"
+        "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }]
     }
 }
