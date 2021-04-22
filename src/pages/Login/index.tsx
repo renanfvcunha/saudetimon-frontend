@@ -94,6 +94,7 @@ const Login: React.FC = () => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                disabled={loading}
               >
                 Entrar
               </Button>

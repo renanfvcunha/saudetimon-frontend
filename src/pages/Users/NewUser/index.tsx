@@ -173,7 +173,12 @@ const NewUser: React.FC<IModal> = ({ open, close, setSuccess }) => {
               )}
 
               <FormControl className={classes.subButton} fullWidth>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={loading}
+                >
                   Cadastrar
                 </Button>
               </FormControl>

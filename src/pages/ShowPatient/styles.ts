@@ -1,5 +1,5 @@
 import { createMuiTheme, makeStyles } from '@material-ui/core';
-import { green, red, amber } from '@material-ui/core/colors';
+import { green, red, lightBlue } from '@material-ui/core/colors';
 
 import defaultStyles from '../../utils/defaultStyles';
 
@@ -39,6 +39,12 @@ const useStyles = makeStyles(theme => ({
     width: 400,
     marginTop: '1rem',
   },
+  loading: {
+    marginTop: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   mt2: {
     marginTop: '2rem',
   },
@@ -52,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     color: red['600'],
   },
   colorAmber: {
-    color: amber['600'],
+    color: lightBlue['600'],
   },
   colorGreen: {
     color: green['600'],

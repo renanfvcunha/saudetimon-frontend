@@ -205,7 +205,12 @@ const EditUser: React.FC<IModal> = ({ open, close, setSuccess, idUser }) => {
               )}
 
               <FormControl className={classes.subButton} fullWidth>
-                <Button variant="contained" color="primary" type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={loading}
+                >
                   Salvar
                 </Button>
               </FormControl>

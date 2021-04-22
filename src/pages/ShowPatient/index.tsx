@@ -8,6 +8,7 @@ import {
   Typography,
   ThemeProvider,
   TextField,
+  CircularProgress,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import ModalImage from 'react-modal-image';
@@ -52,6 +53,7 @@ const ShowPatient: React.FC = () => {
   });
   const [modalDisapprove, setModalDisapprove] = useState(false);
   const [disapproveMsg, setDisapproveMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleCloseModal = () => {
     if (modalConfirmation) {
@@ -83,6 +85,8 @@ const ShowPatient: React.FC = () => {
   }, [id, showPatientCall]);
 
   const handleApprovePatient = async () => {
+    setLoading(true);
+
     try {
       const msg = await handleApprovePatientCall(id);
 
@@ -94,10 +98,14 @@ const ShowPatient: React.FC = () => {
         err,
         'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDisapprovePatient = async () => {
+    setLoading(true);
+
     try {
       const msg = await handleDisapprovePatientCall(id, disapproveMsg);
 
@@ -109,6 +117,8 @@ const ShowPatient: React.FC = () => {
         err,
         'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -465,6 +475,7 @@ const ShowPatient: React.FC = () => {
           close={handleCloseModal}
           title={modalConfirmation.title}
           msg={modalConfirmation.msg}
+          loading={loading}
           cancel="Cancelar"
           confirm={modalConfirmation.confirm}
           confirmAction={modalConfirmation.confirmAction}
@@ -488,12 +499,26 @@ const ShowPatient: React.FC = () => {
           para que seu cadastro possa ser atualizado."
         />
 
+        {loading && (
+          <div className={classes.loading}>
+            <CircularProgress size={24} />
+          </div>
+        )}
+
         <ThemeProvider theme={ActButtons}>
           <div className={clsx([classes.actButtons, classes.mt1])}>
-            <Button color="primary" onClick={handleCloseModal}>
+            <Button
+              color="primary"
+              onClick={handleCloseModal}
+              disabled={loading}
+            >
               Cancelar
             </Button>
-            <Button color="secondary" onClick={handleDisapprovePatient}>
+            <Button
+              color="secondary"
+              onClick={handleDisapprovePatient}
+              disabled={loading}
+            >
               Reprovar
             </Button>
           </div>

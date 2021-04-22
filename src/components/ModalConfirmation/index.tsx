@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,6 +18,7 @@ interface Modal {
   confirmAction?: () => void;
   title?: string;
   msg: string | JSX.Element;
+  loading?: boolean;
   cancel: string;
   confirm: string;
 }
@@ -38,6 +40,7 @@ const ModalConfirmation: React.FC<Modal> = ({
   confirmAction,
   title,
   msg,
+  loading = false,
   cancel,
   confirm,
 }) => (
@@ -54,11 +57,16 @@ const ModalConfirmation: React.FC<Modal> = ({
       <DialogContent>
         <DialogContentText>{msg}</DialogContentText>
       </DialogContent>
+      {loading && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress size={24} />
+        </div>
+      )}
       <DialogActions>
-        <Button autoFocus onClick={close} color="secondary">
+        <Button autoFocus onClick={close} color="secondary" disabled={loading}>
           {cancel}
         </Button>
-        <Button onClick={confirmAction} color="primary">
+        <Button onClick={confirmAction} color="primary" disabled={loading}>
           {confirm}
         </Button>
       </DialogActions>
@@ -72,6 +80,7 @@ ModalConfirmation.propTypes = {
   confirmAction: PropTypes.func,
   title: PropTypes.string,
   msg: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  loading: PropTypes.bool,
   cancel: PropTypes.string.isRequired,
   confirm: PropTypes.string.isRequired,
 };
@@ -79,6 +88,7 @@ ModalConfirmation.propTypes = {
 ModalConfirmation.defaultProps = {
   title: '',
   confirmAction: () => {},
+  loading: false,
 };
 
 export default React.memo(ModalConfirmation);
