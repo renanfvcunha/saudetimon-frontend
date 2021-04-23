@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   CircularProgress,
@@ -18,9 +18,15 @@ interface Props {
   open: boolean;
   close: () => void;
   setSuccess: () => void;
+  idDoubt: string;
 }
 
-const ModalAddDoubt: React.FC<Props> = ({ open, close, setSuccess }) => {
+const ModalEditDoubt: React.FC<Props> = ({
+  open,
+  close,
+  setSuccess,
+  idDoubt,
+}) => {
   const classes = useStyles();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
@@ -31,11 +37,14 @@ const ModalAddDoubt: React.FC<Props> = ({ open, close, setSuccess }) => {
     setAnswer('');
   };
 
-  const handleAddDoubt = async () => {
+  const handleEditDoubt = async () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/doubts', { question, answer });
+      const response = await api.put(`/doubts/${idDoubt}`, {
+        question,
+        answer,
+      });
 
       toast.success(response.data.msg);
       clearFields();
@@ -44,12 +53,30 @@ const ModalAddDoubt: React.FC<Props> = ({ open, close, setSuccess }) => {
     } catch (err) {
       catchHandler(
         err,
-        'Não foi possível adicionar a dúvida. Tente novamente ou contate o suporte.'
+        'Não foi possível editar a dúvida. Tente novamente ou contate o suporte.'
       );
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const getDoubt = async () => {
+      try {
+        const response = await api.get(`/doubts/${idDoubt}`);
+
+        setQuestion(response.data.question);
+        setAnswer(response.data.answer);
+      } catch (err) {
+        catchHandler(
+          err,
+          'Não foi possível listar a dúvida. Tente novamente ou contate o suporte.'
+        );
+      }
+    };
+
+    getDoubt();
+  }, [idDoubt]);
 
   return (
     <DefaultModal open={open} close={close}>
@@ -86,8 +113,8 @@ const ModalAddDoubt: React.FC<Props> = ({ open, close, setSuccess }) => {
           <Button color="secondary" onClick={close} disabled={loading}>
             Cancelar
           </Button>
-          <Button color="primary" onClick={handleAddDoubt} disabled={loading}>
-            Adicionar
+          <Button color="primary" onClick={handleEditDoubt} disabled={loading}>
+            Salvar
           </Button>
         </ThemeProvider>
       </div>
@@ -95,10 +122,11 @@ const ModalAddDoubt: React.FC<Props> = ({ open, close, setSuccess }) => {
   );
 };
 
-ModalAddDoubt.propTypes = {
+ModalEditDoubt.propTypes = {
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   setSuccess: PropTypes.func.isRequired,
+  idDoubt: PropTypes.string.isRequired,
 };
 
-export default React.memo(ModalAddDoubt);
+export default React.memo(ModalEditDoubt);
