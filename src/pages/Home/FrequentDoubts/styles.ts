@@ -5,10 +5,14 @@ const useStyles = makeStyles(() => ({
   boxTitle: {
     margin: '1rem 0',
   },
+  backBtn: {
+    position: 'absolute',
+  },
   mt05: {
     marginTop: '0.5rem',
   },
   frequentDoubts: {
+    maxWidth: 1140,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

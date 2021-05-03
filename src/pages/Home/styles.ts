@@ -11,6 +11,12 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     backgroundColor: defaultStyles.defaultBackground,
   },
+  buttons: {
+    marginTop: '2rem',
+  },
+  btn: {
+    margin: '0 0.5rem',
+  },
 }));
 
 export default useStyles;

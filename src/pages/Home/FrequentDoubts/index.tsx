@@ -9,10 +9,11 @@ import {
   ThemeProvider,
   Button,
 } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import { Add, ArrowBack } from '@material-ui/icons';
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
-import DefaultBox from '../../../components/DefaultBox';
+import DefaultModal from '../../../components/DefaultModal';
 import useStyles, { doubtActionsBtns } from './styles';
 import { buttonsTheme } from './ModalAddDoubt/styles';
 import ModalAddDoubt from './ModalAddDoubt';
@@ -22,7 +23,12 @@ import catchHandler from '../../../utils/catchHandler';
 import ModalEditDoubt from './ModalEditDoubt';
 import ModalConfirmation from '../../../components/ModalConfirmation';
 
-const FrequentDoubts: React.FC = () => {
+interface Props {
+  open: boolean;
+  close: () => void;
+}
+
+const FrequentDoubts: React.FC<Props> = ({ open, close }) => {
   const classes = useStyles();
   const [doubts, setDoubts] = useState<IDoubt[]>();
   const [modalAddDoubt, setModalAddDoubt] = useState(false);
@@ -85,7 +91,18 @@ const FrequentDoubts: React.FC = () => {
 
   return (
     <>
-      <DefaultBox scrollable>
+      <DefaultModal open={open} close={close} scrollable>
+        <Tooltip
+          title="Voltar"
+          aria-label="back"
+          className={classes.backBtn}
+          onClick={close}
+        >
+          <Fab color="primary" size="small">
+            <ArrowBack />
+          </Fab>
+        </Tooltip>
+
         <Typography
           component="h1"
           variant="h4"
@@ -137,7 +154,7 @@ const FrequentDoubts: React.FC = () => {
               </Card>
             ))}
         </div>
-      </DefaultBox>
+      </DefaultModal>
 
       <ModalAddDoubt
         open={modalAddDoubt}
@@ -168,6 +185,11 @@ const FrequentDoubts: React.FC = () => {
       </ThemeProvider>
     </>
   );
+};
+
+FrequentDoubts.propTypes = {
+  open: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
 };
 
 export default FrequentDoubts;

@@ -16,6 +16,10 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1, 2, 1),
       backgroundColor: defaultStyles.defaultBoxBackground,
     },
+    scrollable: {
+      maxHeight: 768,
+      overflow: 'auto',
+    },
   })
 );
 
