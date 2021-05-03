@@ -1,4 +1,5 @@
-import { makeStyles } from '@material-ui/core';
+import { createMuiTheme, makeStyles } from '@material-ui/core';
+import { green, red } from '@material-ui/core/colors';
 
 import defaultStyles from '../../utils/defaultStyles';
 
@@ -30,5 +31,16 @@ const useStyles = makeStyles(theme => ({
     top: 5,
   },
 }));
+
+export const confirmationBtns = createMuiTheme({
+  palette: {
+    primary: {
+      main: green['500'],
+    },
+    secondary: {
+      main: red['500'],
+    },
+  },
+});
 
 export default useStyles;

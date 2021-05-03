@@ -17,6 +17,7 @@ interface PatientContextData {
   showPatientCall: (id: string) => Promise<IPatient>;
   handleApprovePatientCall: (id: string) => Promise<string>;
   handleDisapprovePatientCall: (id: string, message: string) => Promise<string>;
+  markAsVaccinatedCall: (id: string) => Promise<string>;
 }
 
 const PatientContext = createContext<PatientContextData>(
@@ -76,6 +77,14 @@ export const PatientProvider: React.FC = ({ children }) => {
     return response.data.msg;
   };
 
+  const markAsVaccinatedCall = async (id: string) => {
+    const response: AxiosResponse<{ msg: string }> = await api.patch(
+      `/markasvaccinated/${id}`
+    );
+
+    return response.data.msg;
+  };
+
   return (
     <PatientContext.Provider
       value={{
@@ -84,6 +93,7 @@ export const PatientProvider: React.FC = ({ children }) => {
         showPatientCall,
         handleApprovePatientCall,
         handleDisapprovePatientCall,
+        markAsVaccinatedCall,
       }}
     >
       {children}
