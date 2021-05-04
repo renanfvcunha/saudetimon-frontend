@@ -141,7 +141,7 @@ const Menu: React.FC = () => {
                   button
                   onClick={() => {
                     setChangePathName(true);
-                    setPageTitle('Pacientes');
+                    setPageTitle('Novos Pacientes');
                   }}
                   selected={pathName === 'patients/new'}
                 >
@@ -157,7 +157,7 @@ const Menu: React.FC = () => {
                   button
                   onClick={() => {
                     setChangePathName(true);
-                    setPageTitle('Pacientes');
+                    setPageTitle('Pacientes Aprovados');
                   }}
                   selected={pathName.startsWith('patients/approved')}
                 >

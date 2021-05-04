@@ -6,18 +6,19 @@ import defaultStyles from '../../utils/defaultStyles';
 const useStyles = makeStyles(theme => ({
   content: {
     minHeight: '100vh',
-    background: `url("${loginBackground}") #654d7d`,
+    background: `url("${loginBackground}") #27548a`,
     backgroundSize: 'cover',
   },
   paper: {
-    paddingTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '85vh',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(5),
   },
   input: {
     color: '#e7e7e7',
