@@ -23,12 +23,18 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 1140,
     height: 640,
   },
+  selects: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  selectCategories: {
+    width: 250,
+  },
   selectGroups: {
-    position: 'absolute',
-    width: '100%',
-    maxWidth: 300,
-    left: 450,
-    top: 5,
+    marginLeft: 12,
+    width: 250,
   },
 }));
 

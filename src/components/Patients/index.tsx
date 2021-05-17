@@ -40,6 +40,7 @@ import IGroup from '../../typescript/IGroup';
 import PatientContext from '../../contexts/patientContext';
 import catchHandler from '../../utils/catchHandler';
 import ModalConfirmation from '../ModalConfirmation';
+import ICategory from '../../typescript/ICategory';
 
 interface Props {
   tableTitle: string;
@@ -49,17 +50,26 @@ interface Props {
 const Patients: React.FC<Props> = ({ tableTitle, status }) => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
-  const { getGroupsCall, getPatientsCall, markAsVaccinatedCall } = useContext(
-    PatientContext
-  );
+  const {
+    getCategoriesCall,
+    getGroupsCall,
+    getPatientsCall,
+    markAsVaccinatedCall,
+  } = useContext(PatientContext);
   const history = useHistory();
 
+  const [categories, setCategories] = useState<ICategory[]>();
   const [groups, setGroups] = useState<IGroup[]>();
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedGroup, setSelectedGroup] = useState('');
   const [modalConfirmation, setModalConfirmation] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState('');
   const [selectedPatientName, setSelectedPatientName] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleChangeCategory = (e: ChangeEvent<{ value: unknown }>) => {
+    setSelectedCategory(e.target.value as string);
+  };
 
   const handleChangeGroup = (e: ChangeEvent<{ value: unknown }>) => {
     setSelectedGroup(e.target.value as string);
@@ -136,9 +146,26 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
   }
 
   useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const data = await getCategoriesCall();
+
+        setCategories(data);
+      } catch (err) {
+        catchHandler(
+          err,
+          'Erro ao listar categorias. Tente novamente ou contate o suporte.'
+        );
+      }
+    };
+
+    getCategories();
+  }, [getCategoriesCall]);
+
+  useEffect(() => {
     const getGroups = async () => {
       try {
-        const data = await getGroupsCall();
+        const data = await getGroupsCall(selectedCategory);
 
         setGroups(data);
       } catch (err) {
@@ -149,8 +176,10 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
       }
     };
 
-    getGroups();
-  }, [getGroupsCall]);
+    if (selectedCategory !== '') {
+      getGroups();
+    }
+  }, [getGroupsCall, selectedCategory]);
 
   useEffect(() => {
     tableRef.current?.onQueryChange();
@@ -207,8 +236,8 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
                     query.pageSize.toString(),
                     query.page.toString(),
                     status,
-                    undefined,
-                    undefined,
+                    selectedCategory,
+                    selectedGroup,
                     'false'
                   )
                     .then(patient => {
@@ -263,22 +292,46 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
                 Toolbar: props => (
                   <>
                     <MTableToolbar {...props} />
-                    {groups && (
-                      <FormControl className={classes.selectGroups}>
-                        <InputLabel>Grupo</InputLabel>
-                        <Select
-                          value={selectedGroup}
-                          onChange={handleChangeGroup}
-                        >
-                          <MenuItem value="">Todos</MenuItem>
-                          {groups.map(group => (
-                            <MenuItem key={group.id} value={String(group.id)}>
-                              {group.group}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    )}
+                    <div className={classes.selects}>
+                      {categories && (
+                        <FormControl className={classes.selectCategories}>
+                          <InputLabel>Categoria</InputLabel>
+                          <Select
+                            value={selectedCategory}
+                            onChange={handleChangeCategory}
+                          >
+                            <MenuItem value="">Todos</MenuItem>
+                            {categories.map(category => (
+                              <MenuItem
+                                key={category.id}
+                                value={category.id.toString()}
+                              >
+                                {category.category}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      )}
+                      {groups && (
+                        <FormControl className={classes.selectGroups}>
+                          <InputLabel>Grupo</InputLabel>
+                          <Select
+                            value={selectedGroup}
+                            onChange={handleChangeGroup}
+                          >
+                            <MenuItem value="">Todos</MenuItem>
+                            {groups.map(group => (
+                              <MenuItem
+                                key={group.id}
+                                value={group.id.toString()}
+                              >
+                                {group.group}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      )}
+                    </div>
                   </>
                 ),
               }}

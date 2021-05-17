@@ -5,9 +5,11 @@ import PropTypes from 'prop-types';
 import api from '../services/api';
 import IGroup from '../typescript/IGroup';
 import IPatient, { IPagination } from '../typescript/IPatient';
+import ICategory from '../typescript/ICategory';
 
 interface PatientContextData {
-  getGroupsCall: () => Promise<IGroup[]>;
+  getCategoriesCall: () => Promise<ICategory[]>;
+  getGroupsCall: (idCategory?: string) => Promise<IGroup[]>;
   getPatientsCall: (
     perPage?: string,
     page?: string,
@@ -27,8 +29,16 @@ const PatientContext = createContext<PatientContextData>(
 );
 
 export const PatientProvider: React.FC = ({ children }) => {
-  const getGroupsCall = async () => {
-    const response: AxiosResponse<IGroup[]> = await api.get('/groups');
+  const getCategoriesCall = async () => {
+    const response: AxiosResponse<ICategory[]> = await api.get('/categories');
+
+    return response.data;
+  };
+
+  const getGroupsCall = async (idCategory?: string) => {
+    const response: AxiosResponse<IGroup[]> = await api.get(
+      `/groups?idCategory=${idCategory || ''}`
+    );
 
     return response.data;
   };
@@ -95,6 +105,7 @@ export const PatientProvider: React.FC = ({ children }) => {
   return (
     <PatientContext.Provider
       value={{
+        getCategoriesCall,
         getGroupsCall,
         getPatientsCall,
         showPatientCall,
