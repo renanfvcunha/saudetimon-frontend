@@ -36,6 +36,5 @@ export default interface IPatient {
 
 export interface IPagination {
   data: IPatient[];
-  page: number;
   totalCount: number;
 }

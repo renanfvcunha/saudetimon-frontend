@@ -43,10 +43,10 @@ import ModalConfirmation from '../ModalConfirmation';
 
 interface Props {
   tableTitle: string;
-  idGroup: string;
+  status: string;
 }
 
-const Patients: React.FC<Props> = ({ tableTitle, idGroup }) => {
+const Patients: React.FC<Props> = ({ tableTitle, status }) => {
   const classes = useStyles();
   const tableRef: RefObject<{ onQueryChange(): void }> = createRef();
   const { getGroupsCall, getPatientsCall, markAsVaccinatedCall } = useContext(
@@ -122,7 +122,7 @@ const Patients: React.FC<Props> = ({ tableTitle, idGroup }) => {
     },
   ];
 
-  if (idGroup === '2') {
+  if (status === '2') {
     tableActions.push({
       icon: () => <CheckCircle />,
       tooltip: 'Marcar como Vacinado',
@@ -192,7 +192,7 @@ const Patients: React.FC<Props> = ({ tableTitle, idGroup }) => {
                   render: rowData => <>{masks.cpfMask(rowData.cpf)}</>,
                 },
                 {
-                  title: 'Criado Em',
+                  title: 'Cadastrado Em',
                   field: 'createdAt',
                   type: 'datetime',
                   align: 'left',
@@ -204,15 +204,17 @@ const Patients: React.FC<Props> = ({ tableTitle, idGroup }) => {
               data={query =>
                 new Promise((resolve, reject) => {
                   getPatientsCall(
-                    query.pageSize,
-                    query.page,
-                    idGroup,
-                    selectedGroup
+                    query.pageSize.toString(),
+                    query.page.toString(),
+                    status,
+                    undefined,
+                    undefined,
+                    'false'
                   )
                     .then(patient => {
                       resolve({
                         data: patient.data,
-                        page: patient.page,
+                        page: query.page,
                         totalCount: patient.totalCount,
                       });
                     })
@@ -284,7 +286,7 @@ const Patients: React.FC<Props> = ({ tableTitle, idGroup }) => {
           </div>
         </div>
       </main>
-      {idGroup === '2' && (
+      {status === '2' && (
         <ThemeProvider theme={confirmationBtns}>
           <ModalConfirmation
             open={modalConfirmation}
@@ -309,7 +311,7 @@ const Patients: React.FC<Props> = ({ tableTitle, idGroup }) => {
 
 Patients.propTypes = {
   tableTitle: PropTypes.string.isRequired,
-  idGroup: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
 };
 
 export default Patients;

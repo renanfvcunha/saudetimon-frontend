@@ -9,10 +9,12 @@ import IPatient, { IPagination } from '../typescript/IPatient';
 interface PatientContextData {
   getGroupsCall: () => Promise<IGroup[]>;
   getPatientsCall: (
-    perPage: number,
-    page: number,
-    idStatus: string,
-    idGroup: string
+    perPage?: string,
+    page?: string,
+    status?: string,
+    idCategory?: string,
+    idGroup?: string,
+    vaccinated?: string
   ) => Promise<IPagination>;
   showPatientCall: (id: string) => Promise<IPatient>;
   handleApprovePatientCall: (id: string) => Promise<string>;
@@ -32,19 +34,24 @@ export const PatientProvider: React.FC = ({ children }) => {
   };
 
   const getPatientsCall = async (
-    perPage: number,
-    page: number,
-    idStatus: string,
-    idGroup: string
+    perPage?: string,
+    page?: string,
+    status?: string,
+    idCategory?: string,
+    idGroup?: string,
+    vaccinated?: string
   ) => {
-    const response: AxiosResponse<IPatient[]> = await api.get(
-      `/patients?per_page=${perPage}&page=${page}&idStatus=${idStatus}&idGroup=${idGroup}`
+    const response: AxiosResponse<[IPatient[], number]> = await api.get(
+      `/patients?per_page=${perPage || ''}&page=${page || ''}&status=${
+        status || ''
+      }&idCategory=${idCategory || ''}&idGroup=${idGroup || ''}&vaccinated=${
+        vaccinated || ''
+      }`
     );
 
     return {
-      data: response.data,
-      page: Number(response.headers.page),
-      totalCount: Number(response.headers['total-count']),
+      data: response.data[0],
+      totalCount: response.data[1],
     };
   };
 

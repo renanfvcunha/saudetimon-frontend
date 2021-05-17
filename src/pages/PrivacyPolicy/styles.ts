@@ -5,7 +5,7 @@ import loginBackground from '../../images/loginBackground.png';
 const useStyles = makeStyles(theme => ({
   content: {
     minHeight: '100vh',
-    background: `url("${loginBackground}") #654d7d`,
+    background: `url("${loginBackground}") #27548a`,
     backgroundSize: 'cover',
   },
   paper: {
