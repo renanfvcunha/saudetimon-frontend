@@ -1,4 +1,4 @@
-export default interface Groups {
+export default interface IGroup {
   id: number;
   group: string;
 }

@@ -1,36 +1,28 @@
+import IAddress from './IAddress';
+import IAttachment from './IAttachment';
+import ICategory from './ICategory';
+import IComorbidity from './IComorbidity';
+import IGroup from './IGroup';
+import IStatus from './IStatus';
+
 export default interface IPatient {
   id: number;
   name: string;
   cpf: string;
-  susCard: string;
+  susCard: string | null;
   phone: string;
-  idDocFront: string;
-  idDocVerse: string;
-  addressProof: string;
-  photo: string;
   createdAt: Date;
-  group: {
-    slug: string;
-    group: string;
-  };
-  address: {
-    street: string;
-    number: number;
-    complement: string;
-    reference: string;
-    neighborhood: string;
-  };
+  category: ICategory;
+  group: IGroup;
+  address: IAddress;
   comorbidityPatient: {
-    medicalReport: string | null;
-    medicalAuthorization: string | null;
-    medicalPrescription: string | null;
-  } | null;
+    renOncImun: boolean;
+    comorbidity: IComorbidity | null;
+  };
+  attachment: IAttachment[];
   patientStatus: {
     message: string | null;
-    status: {
-      id: number;
-      status: string;
-    };
+    status: IStatus;
   };
 }
 

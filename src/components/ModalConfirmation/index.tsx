@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 interface Modal {
   open: boolean;
   close: () => void;
-  confirmAction?: () => void;
+  confirmAction: () => void;
   title?: string;
   msg: string | JSX.Element;
   loading?: boolean;
@@ -77,7 +77,7 @@ const ModalConfirmation: React.FC<Modal> = ({
 ModalConfirmation.propTypes = {
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
-  confirmAction: PropTypes.func,
+  confirmAction: PropTypes.func.isRequired,
   title: PropTypes.string,
   msg: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   loading: PropTypes.bool,
@@ -87,7 +87,6 @@ ModalConfirmation.propTypes = {
 
 ModalConfirmation.defaultProps = {
   title: '',
-  confirmAction: () => {},
   loading: false,
 };
 

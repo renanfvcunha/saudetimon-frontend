@@ -300,7 +300,7 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
                             value={selectedCategory}
                             onChange={handleChangeCategory}
                           >
-                            <MenuItem value="">Todos</MenuItem>
+                            <MenuItem value="">Todas</MenuItem>
                             {categories.map(category => (
                               <MenuItem
                                 key={category.id}

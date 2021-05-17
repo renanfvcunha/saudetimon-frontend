@@ -55,6 +55,35 @@ const ShowPatient: React.FC = () => {
   const [disapproveMsg, setDisapproveMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const fieldParsed = (fieldName: string) => {
+    switch (fieldName) {
+      case 'idDocFront':
+        return 'Documento de Identidade (Frente)';
+      case 'idDocVerse':
+        return 'Documento de Identidade (Verso)';
+      case 'cpf':
+        return 'CPF ou Cartão SUS';
+      case 'addressProof':
+        return 'Comprovante de Endereço';
+      case 'medicalReport':
+        return 'Laudo Médico';
+      case 'medicalAuthorization':
+        return 'Autorização Médica';
+      case 'workContract':
+        return 'Contracheque ou Contrato de Trabalho';
+      case 'prenatalCard':
+        return 'Cartão de Pré Natal';
+      case 'puerperalCard':
+        return 'Cartão de Puérperas';
+      case 'bornAliveDec':
+        return 'Declaração de Nascido Vivo';
+      case 'patientContract':
+        return 'Contrato com Paciente ou Declaração Autenticada';
+      default:
+        return fieldName;
+    }
+  };
+
   const handleCloseModal = () => {
     if (modalConfirmation) {
       setModalConfirmation({
@@ -164,7 +193,9 @@ const ShowPatient: React.FC = () => {
             <div>
               <span className={classes.key}>Cartão Sus:</span>
               <span className={classes.value}>
-                {masks.susCardMask(patient.susCard)}
+                {patient.susCard
+                  ? masks.susCardMask(patient.susCard)
+                  : 'Não Informado'}
               </span>
             </div>
             <div>
@@ -180,18 +211,47 @@ const ShowPatient: React.FC = () => {
               </span>
             </div>
             <div>
+              <span className={classes.key}>Categoria:</span>
+              <span className={classes.value}>
+                <strong>{patient.category.category}</strong>
+              </span>
+            </div>
+            <div>
               <span className={classes.key}>Grupo:</span>
               <span className={classes.value}>
                 <strong>{patient.group.group}</strong>
               </span>
             </div>
             <div>
+              <span className={classes.key}>
+                Paciente Renal, Oncológico ou Imunossuprimido:
+              </span>
+              <span className={classes.value}>
+                <strong>
+                  {patient.comorbidityPatient.renOncImun ? 'Sim' : 'Não'}
+                </strong>
+              </span>
+            </div>
+            <div>
+              <span className={classes.key}>Comorbidade:</span>
+              <span className={classes.value}>
+                <strong>
+                  {patient.comorbidityPatient.comorbidity
+                    ? patient.comorbidityPatient.comorbidity.comorbidity
+                    : 'Não Possui ou Não Informada'}
+                </strong>
+              </span>
+            </div>
+            <div>
               <span className={classes.key}>Status:</span>
               <span
                 className={clsx(classes.value, {
-                  [classes.colorAmber]: patient.patientStatus.status.id === 1,
-                  [classes.colorGreen]: patient.patientStatus.status.id === 2,
-                  [classes.colorRed]: patient.patientStatus.status.id === 3,
+                  [classes.colorAmber]:
+                    patient.patientStatus.status.status === 'Em Análise',
+                  [classes.colorGreen]:
+                    patient.patientStatus.status.status === 'Aprovado',
+                  [classes.colorRed]:
+                    patient.patientStatus.status.status === 'Negado',
                 })}
               >
                 <strong>{patient.patientStatus.status.status}</strong>
@@ -232,210 +292,37 @@ const ShowPatient: React.FC = () => {
             </Typography>
             <Divider className={classes.mb1} />
 
-            <div className={classes.mb1}>
-              <span className={classes.key}>
-                Documento de Identidade (Frente):
-              </span>
-              {patient.idDocFront.startsWith('IMG') ? (
-                <>
-                  <br />
-                  <div className={classes.imgThumb}>
-                    <ModalImage
-                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocFront}`}
-                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocFront}`}
-                      alt={patient.idDocFront}
-                    />
-                  </div>
-                </>
-              ) : (
-                <span className={classes.value}>
-                  <a
-                    href={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocFront}`}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    {patient.idDocFront}
-                  </a>
+            {patient.attachment.map(attach => (
+              <div key={attach.field} className={classes.mb1}>
+                <span className={classes.key}>
+                  {fieldParsed(attach.field)}:
                 </span>
-              )}
-            </div>
+                {attach.filename.startsWith('IMG') ? (
+                  <>
+                    <br />
+                    <div className={classes.imgThumb}>
+                      <ModalImage
+                        small={`${process.env.REACT_APP_API_URL}/uploads/${attach.filename}`}
+                        large={`${process.env.REACT_APP_API_URL}/uploads/${attach.filename}`}
+                        alt={fieldParsed(attach.field)}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <span className={classes.value}>
+                    <a
+                      href={`${process.env.REACT_APP_API_URL}/uploads/${attach.filename}`}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      {attach.filename}
+                    </a>
+                  </span>
+                )}
+              </div>
+            ))}
 
-            <div className={classes.mb1}>
-              <span className={classes.key}>
-                Documento de Identidade (Verso):
-              </span>
-              {patient.idDocVerse.startsWith('IMG') ? (
-                <>
-                  <br />
-                  <div className={classes.imgThumb}>
-                    <ModalImage
-                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocVerse}`}
-                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocVerse}`}
-                      alt={patient.idDocVerse}
-                    />
-                  </div>
-                </>
-              ) : (
-                <span className={classes.value}>
-                  <a
-                    href={`${process.env.REACT_APP_API_URL}/uploads/${patient.idDocVerse}`}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    {patient.idDocVerse}
-                  </a>
-                </span>
-              )}
-            </div>
-
-            <div className={classes.mb1}>
-              <span className={classes.key}>Comprovante de Endereço:</span>
-              {patient.addressProof.startsWith('IMG') ? (
-                <>
-                  <br />
-                  <div className={classes.imgThumb}>
-                    <ModalImage
-                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.addressProof}`}
-                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.addressProof}`}
-                      alt={patient.addressProof}
-                    />
-                  </div>
-                </>
-              ) : (
-                <span className={classes.value}>
-                  <a
-                    href={`${process.env.REACT_APP_API_URL}/uploads/${patient.addressProof}`}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    {patient.addressProof}
-                  </a>
-                </span>
-              )}
-            </div>
-
-            <div className={classes.mb1}>
-              <span className={classes.key}>Foto:</span>
-              {patient.photo.startsWith('IMG') ? (
-                <>
-                  <br />
-                  <div className={classes.imgThumb}>
-                    <ModalImage
-                      small={`${process.env.REACT_APP_API_URL}/uploads/${patient.photo}`}
-                      large={`${process.env.REACT_APP_API_URL}/uploads/${patient.photo}`}
-                      alt={patient.photo}
-                    />
-                  </div>
-                </>
-              ) : (
-                <span className={classes.value}>
-                  <a
-                    href={`${process.env.REACT_APP_API_URL}/uploads/${patient.photo}`}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    {patient.photo}
-                  </a>
-                </span>
-              )}
-            </div>
-
-            {patient.comorbidityPatient && <Divider className={classes.mb1} />}
-
-            {patient.comorbidityPatient &&
-              patient.comorbidityPatient.medicalReport && (
-                <div className={classes.mb1}>
-                  <span className={classes.key}>Laudo Médico:</span>
-                  {patient.comorbidityPatient.medicalReport.startsWith(
-                    'IMG'
-                  ) ? (
-                    <>
-                      <br />
-                      <div className={classes.imgThumb}>
-                        <ModalImage
-                          small={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalReport}`}
-                          large={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalReport}`}
-                          alt={patient.comorbidityPatient.medicalReport}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <span className={classes.value}>
-                      <a
-                        href={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalReport}`}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        {patient.comorbidityPatient.medicalReport}
-                      </a>
-                    </span>
-                  )}
-                </div>
-              )}
-
-            {patient.comorbidityPatient &&
-              patient.comorbidityPatient.medicalAuthorization && (
-                <div className={classes.mb1}>
-                  <span className={classes.key}>Autorização Médica:</span>
-                  {patient.comorbidityPatient.medicalAuthorization.startsWith(
-                    'IMG'
-                  ) ? (
-                    <>
-                      <br />
-                      <div className={classes.imgThumb}>
-                        <ModalImage
-                          small={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalAuthorization}`}
-                          large={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalAuthorization}`}
-                          alt={patient.comorbidityPatient.medicalAuthorization}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <span className={classes.value}>
-                      <a
-                        href={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalAuthorization}`}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        {patient.comorbidityPatient.medicalAuthorization}
-                      </a>
-                    </span>
-                  )}
-                </div>
-              )}
-
-            {patient.comorbidityPatient &&
-              patient.comorbidityPatient.medicalPrescription && (
-                <div className={classes.mb1}>
-                  <span className={classes.key}>Prescrição Médica:</span>
-                  {patient.comorbidityPatient.medicalPrescription.startsWith(
-                    'IMG'
-                  ) ? (
-                    <>
-                      <br />
-                      <div className={classes.imgThumb}>
-                        <ModalImage
-                          small={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalPrescription}`}
-                          large={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalPrescription}`}
-                          alt={patient.comorbidityPatient.medicalPrescription}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <span className={classes.value}>
-                      <a
-                        href={`${process.env.REACT_APP_API_URL}/uploads/${patient.comorbidityPatient.medicalPrescription}`}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        {patient.comorbidityPatient.medicalPrescription}
-                      </a>
-                    </span>
-                  )}
-                </div>
-              )}
-
-            {patient.patientStatus.status.id === 1 && (
+            {patient.patientStatus.status.status === 'Em Análise' && (
               <div className={classes.actButtons}>
                 <ThemeProvider theme={ActButtons}>
                   <Button
@@ -478,7 +365,7 @@ const ShowPatient: React.FC = () => {
           loading={loading}
           cancel="Cancelar"
           confirm={modalConfirmation.confirm}
-          confirmAction={modalConfirmation.confirmAction}
+          confirmAction={() => alert('Deu certo')}
         />
       </ThemeProvider>
 
