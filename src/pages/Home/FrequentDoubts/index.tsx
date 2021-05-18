@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, Fragment } from 'react';
 import {
   Typography,
   Tooltip,
@@ -22,6 +22,7 @@ import api from '../../../services/api';
 import catchHandler from '../../../utils/catchHandler';
 import ModalEditDoubt from './ModalEditDoubt';
 import ModalConfirmation from '../../../components/ModalConfirmation';
+import nl2br from '../../../utils/nl2br';
 
 interface Props {
   open: boolean;
@@ -121,13 +122,11 @@ const FrequentDoubts: React.FC<Props> = ({ open, close }) => {
           {doubts &&
             doubts.map(doubt => (
               <Card key={doubt.id} className={classes.doubtsCard}>
-                <CardContent>
+                <CardContent className={classes.pb0}>
                   <Typography component="h2" variant="h5">
                     {doubt.question}
                   </Typography>
-                  <Typography component="p" className={classes.mt05}>
-                    {doubt.answer}
-                  </Typography>
+                  {nl2br(doubt.answer)}
                 </CardContent>
                 <CardActions className={classes.doubtsActions}>
                   <ThemeProvider theme={doubtActionsBtns}>

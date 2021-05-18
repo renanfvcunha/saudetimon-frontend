@@ -8,10 +8,8 @@ const useStyles = makeStyles(() => ({
   backBtn: {
     position: 'absolute',
   },
-  mt05: {
-    marginTop: '0.5rem',
-  },
   frequentDoubts: {
+    minWidth: 500,
     maxWidth: 1140,
     display: 'flex',
     flexDirection: 'column',
@@ -24,6 +22,9 @@ const useStyles = makeStyles(() => ({
   doubtsActions: {
     display: 'flex',
     justifyContent: 'flex-end',
+  },
+  pb0: {
+    paddingBottom: 0,
   },
 }));
 
