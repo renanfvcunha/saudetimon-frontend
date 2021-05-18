@@ -50,8 +50,6 @@
             }
         ],
         "react/jsx-props-no-spreading": "off",
-        "react/prop-types": "warn",
-        "no-empty-funcion": "off",
-        "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }]
+        "react/prop-types": "warn"
     }
 }

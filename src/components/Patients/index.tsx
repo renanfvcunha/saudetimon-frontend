@@ -128,11 +128,11 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
       tooltip: 'Visualizar Dados',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick: (e: any, rowData: Record<string, any>) =>
-        history.push(`/patients/${rowData.id}`),
+        history.push(`/pacientes/${rowData.id}`),
     },
   ];
 
-  if (status === '2') {
+  if (status === 'Aprovado') {
     tableActions.push({
       icon: () => <CheckCircle />,
       tooltip: 'Marcar como Vacinado',
@@ -339,7 +339,8 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
           </div>
         </div>
       </main>
-      {status === '2' && (
+
+      {status === 'Aprovado' && (
         <ThemeProvider theme={confirmationBtns}>
           <ModalConfirmation
             open={modalConfirmation}

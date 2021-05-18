@@ -2,6 +2,10 @@ import { makeStyles, createStyles, createMuiTheme } from '@material-ui/core';
 
 import defaultStyles from '../../utils/defaultStyles';
 
+interface Props {
+  increaseWidth: boolean;
+}
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme =>
@@ -17,8 +21,12 @@ const useStyles = makeStyles(theme =>
       }),
     },
     appBarShift: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: (props: Props) =>
+        props.increaseWidth ? drawerWidth + 40 : drawerWidth,
+      width: (props: Props) =>
+        props.increaseWidth
+          ? `calc(100% - ${drawerWidth + 40}px)`
+          : `calc(100% - ${drawerWidth}px)`,
       transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -45,7 +53,8 @@ const useStyles = makeStyles(theme =>
       minHeight: '100vh',
     },
     drawerOpen: {
-      width: drawerWidth,
+      width: (props: Props) =>
+        props.increaseWidth ? drawerWidth + 40 : drawerWidth,
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
