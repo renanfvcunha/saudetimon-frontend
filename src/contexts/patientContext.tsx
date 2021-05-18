@@ -6,10 +6,12 @@ import api from '../services/api';
 import IGroup from '../typescript/IGroup';
 import IPatient, { IPagination } from '../typescript/IPatient';
 import ICategory from '../typescript/ICategory';
+import IStatus from '../typescript/IStatus';
 
 interface PatientContextData {
   getCategoriesCall: () => Promise<ICategory[]>;
   getGroupsCall: (idCategory?: string) => Promise<IGroup[]>;
+  getStatusCall: () => Promise<IStatus[]>;
   getPatientsCall: (
     perPage?: string,
     page?: string,
@@ -19,8 +21,11 @@ interface PatientContextData {
     vaccinated?: string
   ) => Promise<IPagination>;
   showPatientCall: (id: string) => Promise<IPatient>;
-  handleApprovePatientCall: (id: string) => Promise<string>;
-  handleDisapprovePatientCall: (id: string, message: string) => Promise<string>;
+  handleChangePatientStatusCall: (
+    id: string,
+    idStatus: string,
+    message?: string
+  ) => Promise<string>;
   markAsVaccinatedCall: (id: string) => Promise<string>;
 }
 
@@ -39,6 +44,12 @@ export const PatientProvider: React.FC = ({ children }) => {
     const response: AxiosResponse<IGroup[]> = await api.get(
       `/groups?idCategory=${idCategory || ''}`
     );
+
+    return response.data;
+  };
+
+  const getStatusCall = async () => {
+    const response: AxiosResponse<IStatus[]> = await api.get('/status');
 
     return response.data;
   };
@@ -71,22 +82,15 @@ export const PatientProvider: React.FC = ({ children }) => {
     return response.data;
   };
 
-  const handleApprovePatientCall = async (id: string) => {
+  const handleChangePatientStatusCall = async (
+    id: string,
+    idStatus: string,
+    message?: string
+  ) => {
     const response: AxiosResponse<{ msg: string }> = await api.patch(
       `/patients/status/${id}`,
       {
-        idStatus: 2,
-      }
-    );
-
-    return response.data.msg;
-  };
-
-  const handleDisapprovePatientCall = async (id: string, message: string) => {
-    const response: AxiosResponse<{ msg: string }> = await api.patch(
-      `/patients/status/${id}`,
-      {
-        idStatus: 3,
+        idStatus,
         message,
       }
     );
@@ -107,10 +111,10 @@ export const PatientProvider: React.FC = ({ children }) => {
       value={{
         getCategoriesCall,
         getGroupsCall,
+        getStatusCall,
         getPatientsCall,
         showPatientCall,
-        handleApprovePatientCall,
-        handleDisapprovePatientCall,
+        handleChangePatientStatusCall,
         markAsVaccinatedCall,
       }}
     >

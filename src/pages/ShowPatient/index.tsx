@@ -7,13 +7,10 @@ import {
   Tooltip,
   Typography,
   ThemeProvider,
-  TextField,
-  CircularProgress,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 import ModalImage from 'react-modal-image';
 import clsx from 'clsx';
-import { toast } from 'react-toastify';
 
 import useStyles, { ActButtons } from './styles';
 import Container from '../../components/Container';
@@ -21,39 +18,17 @@ import PatientContext from '../../contexts/patientContext';
 import IPatient from '../../typescript/IPatient';
 import masks from '../../utils/masks';
 import subHours from '../../utils/subHours';
-import ModalConfirmation from '../../components/ModalConfirmation';
-import DefaultModal from '../../components/DefaultModal';
 import catchHandler from '../../utils/catchHandler';
-
-interface IModalConfirmation {
-  open: boolean;
-  msg: string;
-  confirm: string;
-  title?: string;
-  confirmAction?: () => void;
-}
+import ModalChangeStatus from './ModalChangeStatus';
 
 const ShowPatient: React.FC = () => {
   const classes = useStyles();
   const { id } = useParams<{ id: string }>();
-  const {
-    showPatientCall,
-    handleApprovePatientCall,
-    handleDisapprovePatientCall,
-  } = useContext(PatientContext);
+  const { showPatientCall } = useContext(PatientContext);
   const history = useHistory();
 
   const [patient, setPatient] = useState<IPatient>();
-  const [modalConfirmation, setModalConfirmation] = useState<
-    IModalConfirmation
-  >({
-    open: false,
-    msg: '',
-    confirm: '',
-  });
-  const [modalDisapprove, setModalDisapprove] = useState(false);
-  const [disapproveMsg, setDisapproveMsg] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [modalChangeStatus, setModalChangeStatus] = useState(false);
 
   const fieldParsed = (fieldName: string) => {
     switch (fieldName) {
@@ -84,19 +59,9 @@ const ShowPatient: React.FC = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    if (modalConfirmation) {
-      setModalConfirmation({
-        open: false,
-        msg: '',
-        confirm: '',
-        title: undefined,
-        confirmAction: undefined,
-      });
-    }
-
-    if (modalDisapprove) {
-      setModalDisapprove(false);
+  const closeModal = () => {
+    if (modalChangeStatus) {
+      setModalChangeStatus(false);
     }
   };
 
@@ -112,44 +77,6 @@ const ShowPatient: React.FC = () => {
       );
     }
   }, [id, showPatientCall]);
-
-  const handleApprovePatient = async () => {
-    setLoading(true);
-
-    try {
-      const msg = await handleApprovePatientCall(id);
-
-      toast.success(msg);
-      handleCloseModal();
-      showPatient();
-    } catch (err) {
-      catchHandler(
-        err,
-        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDisapprovePatient = async () => {
-    setLoading(true);
-
-    try {
-      const msg = await handleDisapprovePatientCall(id, disapproveMsg);
-
-      toast.success(msg);
-      handleCloseModal();
-      showPatient();
-    } catch (err) {
-      catchHandler(
-        err,
-        'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     showPatient();
@@ -246,8 +173,10 @@ const ShowPatient: React.FC = () => {
               <span className={classes.key}>Status:</span>
               <span
                 className={clsx(classes.value, {
-                  [classes.colorAmber]:
+                  [classes.colorBlue]:
                     patient.patientStatus.status.status === 'Em Análise',
+                  [classes.colorLime]:
+                    patient.patientStatus.status.status === 'Pré-Aprovado',
                   [classes.colorGreen]:
                     patient.patientStatus.status.status === 'Aprovado',
                   [classes.colorRed]:
@@ -322,95 +251,30 @@ const ShowPatient: React.FC = () => {
               </div>
             ))}
 
-            {patient.patientStatus.status.status === 'Em Análise' && (
-              <div className={classes.actButtons}>
-                <ThemeProvider theme={ActButtons}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.actBtn}
-                    onClick={() =>
-                      setModalConfirmation({
-                        open: true,
-                        msg: `Deseja aprovar o cadastro de ${patient.name}?`,
-                        confirm: 'Aprovar',
-                        title: 'Aprovar Cadastro',
-                        confirmAction: handleApprovePatient,
-                      })
-                    }
-                  >
-                    Aprovar Cadastro
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    className={classes.actBtn}
-                    onClick={() => setModalDisapprove(true)}
-                  >
-                    Reprovar Cadastro
-                  </Button>
-                </ThemeProvider>
-              </div>
-            )}
+            <div className={classes.actButtons}>
+              <ThemeProvider theme={ActButtons}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.actBtn}
+                  onClick={() => setModalChangeStatus(true)}
+                >
+                  Alterar Status
+                </Button>
+              </ThemeProvider>
+            </div>
           </>
         )}
       </Container>
 
-      <ThemeProvider theme={ActButtons}>
-        <ModalConfirmation
-          open={modalConfirmation.open}
-          close={handleCloseModal}
-          title={modalConfirmation.title}
-          msg={modalConfirmation.msg}
-          loading={loading}
-          cancel="Cancelar"
-          confirm={modalConfirmation.confirm}
-          confirmAction={() => alert('Deu certo')}
+      {patient && (
+        <ModalChangeStatus
+          idPatient={patient.id.toString()}
+          open={modalChangeStatus}
+          reloadData={showPatient}
+          close={closeModal}
         />
-      </ThemeProvider>
-
-      <DefaultModal open={modalDisapprove} close={handleCloseModal}>
-        <Typography component="h1" variant="h6" style={{ fontWeight: 500 }}>
-          Reprovar Cadastro
-        </Typography>
-
-        <TextField
-          label="Motivo da Reprovação"
-          multiline
-          rows={3}
-          className={classes.disapproveMsgField}
-          variant="outlined"
-          value={disapproveMsg}
-          onChange={e => setDisapproveMsg(e.target.value)}
-          helperText="O motivo da reprovação ficará visível para o paciente
-          para que seu cadastro possa ser atualizado."
-        />
-
-        {loading && (
-          <div className={classes.loading}>
-            <CircularProgress size={24} />
-          </div>
-        )}
-
-        <ThemeProvider theme={ActButtons}>
-          <div className={clsx([classes.actButtons, classes.mt1])}>
-            <Button
-              color="primary"
-              onClick={handleCloseModal}
-              disabled={loading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              color="secondary"
-              onClick={handleDisapprovePatient}
-              disabled={loading}
-            >
-              Reprovar
-            </Button>
-          </div>
-        </ThemeProvider>
-      </DefaultModal>
+      )}
     </main>
   );
 };
