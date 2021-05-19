@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState, Fragment } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  Fragment,
+  useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   Divider,
@@ -8,12 +14,19 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Add, ArrowBack, Edit, Remove } from '@material-ui/icons';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
-import DefaultModal from '../../../components/DefaultModal';
 import useStyles, { actionButtons } from './styles';
+import { buttonsTheme } from './ModalAddComorbidity/styles';
 import ComorbidityContext from '../../../contexts/comorbidityContext';
 import IComorbidity from '../../../typescript/IComorbidity';
 import catchHandler from '../../../utils/catchHandler';
+import ModalAddComorbidity from './ModalAddComorbidity';
+import ModalEditComorbidity from './ModalEditComorbidity';
+import ModalConfirmation from '../../../components/ModalConfirmation';
+import api from '../../../services/api';
+import DefaultModal from '../../../components/DefaultModal';
 
 interface Props {
   open: boolean;
@@ -25,23 +38,51 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
   const { getComorbiditiesCall } = useContext(ComorbidityContext);
 
   const [comorbidities, setComorbidities] = useState<IComorbidity[]>();
+  const [modalAddComorbidity, setModalAddComorbidity] = useState(false);
+  const [modalEditComorbidity, setModalEditComorbidity] = useState(false);
+  const [modalConfirmation, setModalConfirmation] = useState(false);
+  const [selectedComorbidityId, setSelectedComorbidityId] = useState('');
+  const [selectedComorbidityName, setSelectedComorbidityName] = useState('');
+
+  const closeModal = () => {
+    if (modalAddComorbidity) setModalAddComorbidity(false);
+    if (modalEditComorbidity) setModalEditComorbidity(false);
+    if (modalConfirmation) setModalConfirmation(false);
+  };
+
+  const getComorbidities = useCallback(async () => {
+    try {
+      const data = await getComorbiditiesCall();
+
+      setComorbidities(data);
+    } catch (err) {
+      catchHandler(
+        err,
+        'Não foi possível listar as comorbidades. Tente novamente ou contate o suporte.'
+      );
+    }
+  }, [getComorbiditiesCall]);
+
+  const handleRemoveComorbidity = async () => {
+    try {
+      const response: AxiosResponse<{ msg: string }> = await api.delete(
+        `/comorbidities/${selectedComorbidityId}`
+      );
+
+      toast.success(response.data.msg);
+      getComorbidities();
+      setModalConfirmation(false);
+    } catch (err) {
+      catchHandler(
+        err,
+        'Não foi possível remover a comorbidade. Tente novamente ou contate o suporte.'
+      );
+    }
+  };
 
   useEffect(() => {
-    const getComorbidities = async () => {
-      try {
-        const data = await getComorbiditiesCall();
-
-        setComorbidities(data);
-      } catch (err) {
-        catchHandler(
-          err,
-          'Não foi possível listar as comorbidades. Tente novamente ou contate o suporte.'
-        );
-      }
-    };
-
     getComorbidities();
-  }, [getComorbiditiesCall]);
+  }, [getComorbidities]);
 
   return (
     <DefaultModal open={open} close={close} scrollable>
@@ -64,7 +105,8 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
       >
         Comorbidades&nbsp;
         <Tooltip
-          title="Nova Comorbidade" /* onClick={() => setModalAddDoubt(true)} */
+          title="Nova Comorbidade"
+          onClick={() => setModalAddComorbidity(true)}
         >
           <Fab color="primary" size="small">
             <Add />
@@ -80,7 +122,11 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
                 <div className={classes.comorbidityContent}>
                   <Tooltip
                     title="Editar Comorbidade"
-                    /* onClick={() => setModalAddDoubt(true)} */
+                    onClick={() => {
+                      setModalEditComorbidity(true);
+                      setSelectedComorbidityId(comorbidity.id.toString());
+                      setSelectedComorbidityName(comorbidity.comorbidity);
+                    }}
                   >
                     <Fab color="primary" size="small">
                       <Edit />
@@ -90,7 +136,12 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
                     {comorbidity.comorbidity}
                   </Typography>
                   <Tooltip
-                    title="Remover Comorbidade" /* onClick={() => setModalAddDoubt(true)} */
+                    title="Remover Comorbidade"
+                    onClick={() => {
+                      setModalConfirmation(true);
+                      setSelectedComorbidityId(comorbidity.id.toString());
+                      setSelectedComorbidityName(comorbidity.comorbidity);
+                    }}
                   >
                     <Fab color="secondary" size="small">
                       <Remove />
@@ -101,6 +152,37 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
               </Fragment>
             ))}
         </div>
+      </ThemeProvider>
+
+      <ModalAddComorbidity
+        open={modalAddComorbidity}
+        close={closeModal}
+        refreshData={getComorbidities}
+      />
+
+      <ModalEditComorbidity
+        open={modalEditComorbidity}
+        close={closeModal}
+        refreshData={getComorbidities}
+        idComorbidity={selectedComorbidityId}
+        comorbidityName={selectedComorbidityName}
+      />
+
+      <ThemeProvider theme={buttonsTheme}>
+        <ModalConfirmation
+          open={modalConfirmation}
+          close={closeModal}
+          title="Alerta de Exclusão"
+          msg={
+            <>
+              Deseja remover a comorbidade&nbsp;&quot;
+              <strong>{selectedComorbidityName}</strong>&quot;?
+            </>
+          }
+          confirm="Remover"
+          cancel="Cancelar"
+          confirmAction={handleRemoveComorbidity}
+        />
       </ThemeProvider>
     </DefaultModal>
   );
