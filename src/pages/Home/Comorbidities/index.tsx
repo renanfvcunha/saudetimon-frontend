@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  Fragment,
-  useCallback,
-} from 'react';
+import React, { useEffect, useState, Fragment, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   Divider,
@@ -19,7 +13,6 @@ import { AxiosResponse } from 'axios';
 
 import useStyles, { actionButtons } from './styles';
 import { buttonsTheme } from './ModalAddComorbidity/styles';
-import ComorbidityContext from '../../../contexts/comorbidityContext';
 import IComorbidity from '../../../typescript/IComorbidity';
 import catchHandler from '../../../utils/catchHandler';
 import ModalAddComorbidity from './ModalAddComorbidity';
@@ -35,7 +28,6 @@ interface Props {
 
 const Comorbidities: React.FC<Props> = ({ open, close }) => {
   const classes = useStyles();
-  const { getComorbiditiesCall } = useContext(ComorbidityContext);
 
   const [comorbidities, setComorbidities] = useState<IComorbidity[]>();
   const [modalAddComorbidity, setModalAddComorbidity] = useState(false);
@@ -52,16 +44,18 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
 
   const getComorbidities = useCallback(async () => {
     try {
-      const data = await getComorbiditiesCall();
+      const response: AxiosResponse<IComorbidity[]> = await api.get(
+        '/comorbidities'
+      );
 
-      setComorbidities(data);
+      setComorbidities(response.data);
     } catch (err) {
       catchHandler(
         err,
         'Não foi possível listar as comorbidades. Tente novamente ou contate o suporte.'
       );
     }
-  }, [getComorbiditiesCall]);
+  }, []);
 
   const handleRemoveComorbidity = async () => {
     try {
