@@ -4,7 +4,7 @@ import { Button, Typography } from '@material-ui/core';
 import useStyles from './styles';
 import Container from '../../components/Container';
 import FrequentDoubts from './FrequentDoubts';
-// import Comorbidities from './Comorbidities';
+import Comorbidities from './Comorbidities';
 
 const Home: React.FC = () => {
   const classes = useStyles();
@@ -25,14 +25,14 @@ const Home: React.FC = () => {
         </Typography>
 
         <div className={classes.buttons}>
-          {/* <Button
+          <Button
             variant="contained"
             color="primary"
             className={classes.btn}
             onClick={() => setModalComorbidities(true)}
           >
             Gerenciar Comorbidades
-          </Button> */}
+          </Button>
           <Button
             variant="contained"
             color="primary"
@@ -44,7 +44,7 @@ const Home: React.FC = () => {
         </div>
 
         <FrequentDoubts open={modalFreqDoubts} close={closeModal} />
-        {/* <Comorbidities open={modalComorbidities} close={closeModal} /> */}
+        <Comorbidities open={modalComorbidities} close={closeModal} />
       </Container>
     </main>
   );

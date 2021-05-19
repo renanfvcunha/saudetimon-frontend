@@ -118,7 +118,7 @@ const FrequentDoubts: React.FC<Props> = ({ open, close }) => {
           </Tooltip>
         </Typography>
 
-        <div className={classes.frequentDoubts}>
+        <div className={classes.content}>
           {doubts &&
             doubts.map(doubt => (
               <Card key={doubt.id} className={classes.doubtsCard}>

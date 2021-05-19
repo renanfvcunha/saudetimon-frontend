@@ -8,7 +8,7 @@ const useStyles = makeStyles(() => ({
   backBtn: {
     position: 'absolute',
   },
-  frequentDoubts: {
+  content: {
     minWidth: 500,
     maxWidth: 1140,
     display: 'flex',

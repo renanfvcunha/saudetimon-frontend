@@ -1,21 +1,47 @@
-import React from 'react';
+import React, { JSXElementConstructor, PropsWithChildren } from 'react';
 import { ToastContainer } from 'react-toastify';
 
 import Auth from './Auth';
 import { AuthProvider } from './contexts/authContext';
 import { PatientProvider } from './contexts/patientContext';
+import { ComorbidityProvider } from './contexts/comorbidityContext';
 import { UserProvider } from './contexts/userContext';
 import 'react-toastify/dist/ReactToastify.min.css';
 
-const App: React.FC = () => (
-  <AuthProvider>
-    <PatientProvider>
-      <UserProvider>
-        <Auth />
-        <ToastContainer position="top-center" />
-      </UserProvider>
-    </PatientProvider>
-  </AuthProvider>
-);
+interface Props {
+  components: JSXElementConstructor<PropsWithChildren<unknown>>[];
+  children: React.ReactNode;
+}
+
+const App: React.FC = () => {
+  const Compose = (props: Props) => {
+    const { components = [], children } = props;
+
+    return (
+      <>
+        {components.reduceRight(
+          (acc, Comp) => (
+            <Comp>{acc}</Comp>
+          ),
+          children
+        )}
+      </>
+    );
+  };
+
+  return (
+    <Compose
+      components={[
+        AuthProvider,
+        PatientProvider,
+        ComorbidityProvider,
+        UserProvider,
+      ]}
+    >
+      <Auth />
+      <ToastContainer position="top-center" />
+    </Compose>
+  );
+};
 
 export default App;
