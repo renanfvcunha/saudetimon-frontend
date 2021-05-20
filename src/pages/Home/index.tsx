@@ -5,15 +5,18 @@ import useStyles from './styles';
 import Container from '../../components/Container';
 import FrequentDoubts from './FrequentDoubts';
 import Comorbidities from './Comorbidities';
+import Groups from './Groups';
 
 const Home: React.FC = () => {
   const classes = useStyles();
   const [modalFreqDoubts, setModalFreqDoubts] = useState(false);
   const [modalComorbidities, setModalComorbidities] = useState(false);
+  const [modalGroups, setModalGroups] = useState(false);
 
   const closeModal = () => {
     if (modalFreqDoubts) setModalFreqDoubts(false);
     if (modalComorbidities) setModalComorbidities(false);
+    if (modalGroups) setModalGroups(false);
   };
 
   return (
@@ -37,6 +40,14 @@ const Home: React.FC = () => {
             variant="contained"
             color="primary"
             className={classes.btn}
+            onClick={() => setModalGroups(true)}
+          >
+            Gerenciar Grupos
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.btn}
             onClick={() => setModalFreqDoubts(true)}
           >
             Gerenciar Dúvidas Frequentes
@@ -45,6 +56,7 @@ const Home: React.FC = () => {
 
         <FrequentDoubts open={modalFreqDoubts} close={closeModal} />
         <Comorbidities open={modalComorbidities} close={closeModal} />
+        <Groups open={modalGroups} close={closeModal} />
       </Container>
     </main>
   );

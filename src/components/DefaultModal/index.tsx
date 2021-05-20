@@ -21,8 +21,6 @@ const DefaultModal: React.FC<IModal> = ({
   const classes = useStyles();
   return (
     <Modal
-      aria-labelledby="new-user-modal-title"
-      aria-describedby="new-user-modal-description"
       className={classes.modal}
       open={open}
       onClose={close}
