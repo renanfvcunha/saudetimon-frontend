@@ -33,6 +33,7 @@ const Groups: React.FC<Props> = ({ open, close }) => {
   const [modalAddGroup, setModalAddGroup] = useState(false);
   const [modalEditGroup, setModalEditGroup] = useState(false);
   const [modalConfirmation, setModalConfirmation] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [selectedGroupId, setSelectedGroupId] = useState('');
   const [selectedGroupName, setSelectedGroupName] = useState('');
 
@@ -113,9 +114,12 @@ const Groups: React.FC<Props> = ({ open, close }) => {
               <Fragment key={group.id}>
                 <div className={classes.items}>
                   <Tooltip
-                    title="Editar Comorbidade"
+                    title="Editar Grupo"
                     onClick={() => {
                       setModalEditGroup(true);
+                      setSelectedCategoryId(
+                        group.category ? group.category.id.toString() : ''
+                      );
                       setSelectedGroupId(group.id.toString());
                       setSelectedGroupName(group.group);
                     }}
@@ -124,11 +128,21 @@ const Groups: React.FC<Props> = ({ open, close }) => {
                       <Edit />
                     </Fab>
                   </Tooltip>
-                  <Typography component="span" className={classes.itemName}>
-                    {group.group}
-                  </Typography>
+                  <div className={classes.itemBox}>
+                    <Typography component="span" className={classes.itemName}>
+                      {group.group}
+                    </Typography>
+                    {group.category && (
+                      <Typography
+                        component="span"
+                        className={classes.categoryText}
+                      >
+                        Categoria: {group.category.category}
+                      </Typography>
+                    )}
+                  </div>
                   <Tooltip
-                    title="Remover Comorbidade"
+                    title="Remover Grupo"
                     onClick={() => {
                       setModalConfirmation(true);
                       setSelectedGroupId(group.id.toString());
@@ -156,6 +170,7 @@ const Groups: React.FC<Props> = ({ open, close }) => {
         open={modalEditGroup}
         close={closeModal}
         refreshData={getGroups}
+        idCategory={selectedCategoryId}
         idGroup={selectedGroupId}
         groupName={selectedGroupName}
       />

@@ -20,11 +20,20 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  itemName: {
+  itemBox: {
     width: 250,
     margin: '0 16px',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  itemName: {
     fontSize: 16,
     fontWeight: 500,
+  },
+  categoryText: {
+    marginTop: 4,
+    fontSize: 14,
+    color: '#707070',
   },
   divider: {
     width: '70%',
