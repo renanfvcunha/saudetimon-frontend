@@ -11,11 +11,13 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     backgroundColor: defaultStyles.defaultBackground,
   },
-  buttons: {
-    marginTop: '2rem',
+  list: {
+    display: 'flex',
+    justifyContent: 'center',
   },
-  btn: {
-    margin: '0 0.5rem',
+  listText: {
+    fontSize: 16,
+    fontWeight: 500,
   },
 }));
 
