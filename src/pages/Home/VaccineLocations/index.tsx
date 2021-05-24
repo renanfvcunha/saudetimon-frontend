@@ -21,6 +21,7 @@ import DefaultModal from '../../../components/DefaultModal';
 import IVaccineLocation from '../../../typescript/IVaccineLocation';
 import catchHandler from '../../../utils/catchHandler';
 import api from '../../../services/api';
+import ModalAddLocation from './ModalAddLocation';
 
 interface Props {
   open: boolean;
@@ -32,22 +33,26 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
   const [locations, setLocations] = useState<IVaccineLocation[]>();
   const [modalAddLocation, setModalAddLocation] = useState(false);
 
+  const closeModal = () => {
+    if (modalAddLocation) setModalAddLocation(false);
+  };
+
+  const getLocations = async () => {
+    try {
+      const response: AxiosResponse<IVaccineLocation[]> = await api.get(
+        '/vaccinelocations'
+      );
+
+      setLocations(response.data);
+    } catch (err) {
+      catchHandler(
+        err,
+        'Não foi possível listar os locais de vacinação. Tente novamente ou contate o suporte.'
+      );
+    }
+  };
+
   useEffect(() => {
-    const getLocations = async () => {
-      try {
-        const response: AxiosResponse<IVaccineLocation[]> = await api.get(
-          '/vaccinelocations'
-        );
-
-        setLocations(response.data);
-      } catch (err) {
-        catchHandler(
-          err,
-          'Não foi possível listar os locais de vacinação. Tente novamente ou contate o suporte.'
-        );
-      }
-    };
-
     getLocations();
   }, []);
 
@@ -119,13 +124,13 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
         </List>
       </div>
 
-      {/* <ModalAddComorbidity
-        open={modalAddComorbidity}
+      <ModalAddLocation
+        open={modalAddLocation}
         close={closeModal}
-        refreshData={getComorbidities}
+        refreshData={getLocations}
       />
 
-      <ModalEditComorbidity
+      {/* <ModalEditComorbidity
         open={modalEditComorbidity}
         close={closeModal}
         refreshData={getComorbidities}
