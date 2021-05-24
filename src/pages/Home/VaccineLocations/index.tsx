@@ -22,6 +22,7 @@ import IVaccineLocation from '../../../typescript/IVaccineLocation';
 import catchHandler from '../../../utils/catchHandler';
 import api from '../../../services/api';
 import ModalAddLocation from './ModalAddLocation';
+import ModalEditLocation from './ModalEditLocation';
 
 interface Props {
   open: boolean;
@@ -31,10 +32,13 @@ interface Props {
 const VaccineLocations: React.FC<Props> = ({ open, close }) => {
   const classes = useStyles();
   const [locations, setLocations] = useState<IVaccineLocation[]>();
+  const [selectedLocation, setSelectedLocation] = useState<IVaccineLocation>();
   const [modalAddLocation, setModalAddLocation] = useState(false);
+  const [modalEditLocation, setModalEditLocation] = useState(false);
 
   const closeModal = () => {
     if (modalAddLocation) setModalAddLocation(false);
+    if (modalEditLocation) setModalEditLocation(false);
   };
 
   const getLocations = async () => {
@@ -108,7 +112,13 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
                 <ThemeProvider theme={actionButtons}>
                   <ListItemSecondaryAction>
                     <Tooltip title="Editar Local">
-                      <IconButton color="primary">
+                      <IconButton
+                        color="primary"
+                        onClick={() => {
+                          setSelectedLocation(location);
+                          setModalEditLocation(true);
+                        }}
+                      >
                         <Edit />
                       </IconButton>
                     </Tooltip>
@@ -129,6 +139,15 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
         close={closeModal}
         refreshData={getLocations}
       />
+
+      {selectedLocation && (
+        <ModalEditLocation
+          open={modalEditLocation}
+          close={closeModal}
+          location={selectedLocation}
+          refreshData={getLocations}
+        />
+      )}
 
       {/* <ModalEditComorbidity
         open={modalEditComorbidity}
