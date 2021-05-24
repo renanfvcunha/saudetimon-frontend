@@ -16,13 +16,15 @@ import { Add, ArrowBack, Delete, Edit } from '@material-ui/icons';
 import { AxiosResponse } from 'axios';
 import PropTypes from 'prop-types';
 
-import useStyles, { actionButtons, btnGreen } from './styles';
+import { toast } from 'react-toastify';
+import useStyles, { actionButtons, btnGreen, confirmationBtns } from './styles';
 import DefaultModal from '../../../components/DefaultModal';
 import IVaccineLocation from '../../../typescript/IVaccineLocation';
 import catchHandler from '../../../utils/catchHandler';
 import api from '../../../services/api';
 import ModalAddLocation from './ModalAddLocation';
 import ModalEditLocation from './ModalEditLocation';
+import ModalConfirmation from '../../../components/ModalConfirmation';
 
 interface Props {
   open: boolean;
@@ -35,10 +37,12 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
   const [selectedLocation, setSelectedLocation] = useState<IVaccineLocation>();
   const [modalAddLocation, setModalAddLocation] = useState(false);
   const [modalEditLocation, setModalEditLocation] = useState(false);
+  const [modalConfirmation, setModalConfirmation] = useState(false);
 
   const closeModal = () => {
     if (modalAddLocation) setModalAddLocation(false);
     if (modalEditLocation) setModalEditLocation(false);
+    if (modalConfirmation) setModalConfirmation(false);
   };
 
   const getLocations = async () => {
@@ -52,6 +56,25 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
       catchHandler(
         err,
         'Não foi possível listar os locais de vacinação. Tente novamente ou contate o suporte.'
+      );
+    }
+  };
+
+  const handleRemoveLocation = async () => {
+    try {
+      if (selectedLocation) {
+        const response: AxiosResponse<{ msg: string }> = await api.delete(
+          `/vaccinelocations/${selectedLocation.id}`
+        );
+
+        toast.success(response.data.msg);
+        setModalConfirmation(false);
+        getLocations();
+      }
+    } catch (err) {
+      catchHandler(
+        err,
+        'Não foi possível remover o local de vacinação. Tente novamente ou contate o suporte.'
       );
     }
   };
@@ -123,7 +146,13 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Remover Local">
-                      <IconButton color="secondary">
+                      <IconButton
+                        color="secondary"
+                        onClick={() => {
+                          setSelectedLocation(location);
+                          setModalConfirmation(true);
+                        }}
+                      >
                         <Delete />
                       </IconButton>
                     </Tooltip>
@@ -149,30 +178,22 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
         />
       )}
 
-      {/* <ModalEditComorbidity
-        open={modalEditComorbidity}
-        close={closeModal}
-        refreshData={getComorbidities}
-        idComorbidity={selectedComorbidityId}
-        comorbidityName={selectedComorbidityName}
-      />
-
-      <ThemeProvider theme={buttonsTheme}>
+      <ThemeProvider theme={confirmationBtns}>
         <ModalConfirmation
           open={modalConfirmation}
           close={closeModal}
           title="Alerta de Exclusão"
           msg={
             <>
-              Deseja remover a comorbidade&nbsp;&quot;
-              <strong>{selectedComorbidityName}</strong>&quot;?
+              Deseja remover o local&nbsp;&quot;
+              <strong>{selectedLocation?.name}</strong>&quot;?
             </>
           }
           confirm="Remover"
           cancel="Cancelar"
-          confirmAction={handleRemoveComorbidity}
+          confirmAction={handleRemoveLocation}
         />
-      </ThemeProvider> */}
+      </ThemeProvider>
     </DefaultModal>
   );
 };

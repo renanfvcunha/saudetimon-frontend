@@ -40,4 +40,15 @@ export const actionButtons = createMuiTheme({
   },
 });
 
+export const confirmationBtns = createMuiTheme({
+  palette: {
+    primary: {
+      main: red['500'],
+    },
+    secondary: {
+      main: green['500'],
+    },
+  },
+});
+
 export default useStyles;
