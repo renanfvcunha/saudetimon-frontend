@@ -37,6 +37,7 @@ const ModalEditLocation: React.FC<Props> = ({
 
   const [name, setName] = useState('');
   const [helperText, setHelperText] = useState('');
+  const [url, setUrl] = useState('');
   const [picture, setPicture] = useState<File>();
   const [loading, setLoading] = useState(false);
 
@@ -46,6 +47,7 @@ const ModalEditLocation: React.FC<Props> = ({
     const data = new FormData();
     data.append('name', name);
     data.append('helperText', helperText);
+    data.append('url', url);
     if (picture) {
       data.append('picture', picture);
     }
@@ -74,6 +76,7 @@ const ModalEditLocation: React.FC<Props> = ({
   useEffect(() => {
     setName(location.name);
     setHelperText(location.helperText);
+    setUrl(location.url);
   }, [location]);
 
   return (
@@ -99,8 +102,17 @@ const ModalEditLocation: React.FC<Props> = ({
           value={helperText}
           onChange={e => setHelperText(e.target.value)}
         />
+        <TextField
+          label="URL"
+          helperText="Link do Google Maps"
+          variant="outlined"
+          className={classes.input}
+          value={url}
+          onChange={e => setUrl(e.target.value)}
+        />
         <Button
           variant="outlined"
+          className={classes.input}
           onClick={() => inputPictureRef.current?.click()}
         >
           Foto do Local
@@ -156,6 +168,7 @@ ModalEditLocation.propTypes = {
     name: PropTypes.string.isRequired,
     helperText: PropTypes.string.isRequired,
     picture: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
   }).isRequired,
   refreshData: PropTypes.func.isRequired,
 };

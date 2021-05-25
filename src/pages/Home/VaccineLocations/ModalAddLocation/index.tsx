@@ -30,6 +30,7 @@ const ModalAddLocation: React.FC<Props> = ({ open, close, refreshData }) => {
 
   const [name, setName] = useState('');
   const [helperText, setHelperText] = useState('');
+  const [url, setUrl] = useState('');
   const [picture, setPicture] = useState<File>();
   const [loading, setLoading] = useState(false);
 
@@ -45,6 +46,7 @@ const ModalAddLocation: React.FC<Props> = ({ open, close, refreshData }) => {
     const data = new FormData();
     data.append('name', name);
     data.append('helperText', helperText);
+    data.append('url', url);
     if (picture) {
       data.append('picture', picture);
     }
@@ -93,8 +95,17 @@ const ModalAddLocation: React.FC<Props> = ({ open, close, refreshData }) => {
           value={helperText}
           onChange={e => setHelperText(e.target.value)}
         />
+        <TextField
+          label="URL"
+          helperText="Link do Google Maps"
+          variant="outlined"
+          className={classes.input}
+          value={url}
+          onChange={e => setUrl(e.target.value)}
+        />
         <Button
           variant="outlined"
+          className={classes.input}
           onClick={() => inputPictureRef.current?.click()}
         >
           Foto do Local
