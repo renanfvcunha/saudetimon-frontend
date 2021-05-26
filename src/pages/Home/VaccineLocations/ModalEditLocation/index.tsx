@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState, createRef, useEffect, ChangeEvent } from 'react';
 import {
   Avatar,
   Button,
@@ -41,7 +41,17 @@ const ModalEditLocation: React.FC<Props> = ({
   const [picture, setPicture] = useState<File>();
   const [loading, setLoading] = useState(false);
 
-  const handleAddDoubt = async () => {
+  const handleSetPicture = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      if (e.target.files[0].size > 1048576) {
+        toast.error('Tamanho máximo de 1 MB');
+      } else {
+        setPicture(e.target.files[0]);
+      }
+    }
+  };
+
+  const handleEditLocation = async () => {
     setLoading(true);
 
     const data = new FormData();
@@ -121,9 +131,8 @@ const ModalEditLocation: React.FC<Props> = ({
           type="file"
           hidden
           ref={inputPictureRef}
-          onChange={e =>
-            setPicture(e.target.files ? e.target.files[0] : undefined)
-          }
+          accept="image/*"
+          onChange={handleSetPicture}
         />
         {picture && (
           <div className={classes.pictureArea}>
@@ -151,7 +160,11 @@ const ModalEditLocation: React.FC<Props> = ({
           <Button color="secondary" onClick={close} disabled={loading}>
             Cancelar
           </Button>
-          <Button color="primary" onClick={handleAddDoubt} disabled={loading}>
+          <Button
+            color="primary"
+            onClick={handleEditLocation}
+            disabled={loading}
+          >
             Salvar
           </Button>
         </ThemeProvider>

@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, createRef, ChangeEvent } from 'react';
 import {
   Avatar,
   Button,
@@ -40,7 +40,17 @@ const ModalAddLocation: React.FC<Props> = ({ open, close, refreshData }) => {
     setPicture(undefined);
   };
 
-  const handleAddDoubt = async () => {
+  const handleSetPicture = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      if (e.target.files[0].size > 1048576) {
+        toast.error('Tamanho máximo de 1 MB');
+      } else {
+        setPicture(e.target.files[0]);
+      }
+    }
+  };
+
+  const handleAddLocation = async () => {
     setLoading(true);
 
     const data = new FormData();
@@ -114,9 +124,8 @@ const ModalAddLocation: React.FC<Props> = ({ open, close, refreshData }) => {
           type="file"
           hidden
           ref={inputPictureRef}
-          onChange={e =>
-            setPicture(e.target.files ? e.target.files[0] : undefined)
-          }
+          accept="image/*"
+          onChange={handleSetPicture}
         />
         {picture && (
           <div className={classes.pictureArea}>
@@ -144,7 +153,11 @@ const ModalAddLocation: React.FC<Props> = ({ open, close, refreshData }) => {
           <Button color="secondary" onClick={close} disabled={loading}>
             Cancelar
           </Button>
-          <Button color="primary" onClick={handleAddDoubt} disabled={loading}>
+          <Button
+            color="primary"
+            onClick={handleAddLocation}
+            disabled={loading}
+          >
             Adicionar
           </Button>
         </ThemeProvider>
