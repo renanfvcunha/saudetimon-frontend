@@ -97,10 +97,7 @@ const Groups: React.FC<Props> = ({ open, close }) => {
         className={classes.boxTitle}
       >
         Grupos&nbsp;
-        <Tooltip
-          title="Nova Comorbidade"
-          onClick={() => setModalAddGroup(true)}
-        >
+        <Tooltip title="Novo Grupo" onClick={() => setModalAddGroup(true)}>
           <Fab color="primary" size="small">
             <Add />
           </Fab>

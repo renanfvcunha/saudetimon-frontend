@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   table: {
     width: '100%',
     maxWidth: 1140,
-    height: 640,
+    minHeight: 640,
   },
   selects: {
     display: 'flex',

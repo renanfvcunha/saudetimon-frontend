@@ -287,6 +287,8 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
                 },
                 sorting: false,
                 search: false,
+                pageSize: 50,
+                pageSizeOptions: [5, 10, 20, 50, 100, 200],
               }}
               components={{
                 Toolbar: props => (
