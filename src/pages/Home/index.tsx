@@ -12,7 +12,6 @@ import useStyles from './styles';
 import Container from '../../components/Container';
 import FrequentDoubts from './FrequentDoubts';
 import Comorbidities from './Comorbidities';
-import Groups from './Groups';
 import VaccineLocations from './VaccineLocations';
 import Phones from './Phones';
 
@@ -20,14 +19,12 @@ const Home: React.FC = () => {
   const classes = useStyles();
   const [modalFreqDoubts, setModalFreqDoubts] = useState(false);
   const [modalComorbidities, setModalComorbidities] = useState(false);
-  const [modalGroups, setModalGroups] = useState(false);
   const [modalVaccineLocations, setModalVaccineLocations] = useState(false);
   const [modalPhones, setModalPhones] = useState(false);
 
   const closeModal = () => {
     if (modalFreqDoubts) setModalFreqDoubts(false);
     if (modalComorbidities) setModalComorbidities(false);
-    if (modalGroups) setModalGroups(false);
     if (modalVaccineLocations) setModalVaccineLocations(false);
     if (modalPhones) setModalPhones(false);
   };
@@ -48,16 +45,6 @@ const Home: React.FC = () => {
               </ListItemIcon>
               <ListItemText
                 primary="Gerenciar Comorbidades"
-                disableTypography
-                className={classes.listText}
-              />
-            </ListItem>
-            <ListItem button onClick={() => setModalGroups(true)}>
-              <ListItemIcon>
-                <Settings />
-              </ListItemIcon>
-              <ListItemText
-                primary="Gerenciar Grupos"
                 disableTypography
                 className={classes.listText}
               />
@@ -97,7 +84,6 @@ const Home: React.FC = () => {
 
         <FrequentDoubts open={modalFreqDoubts} close={closeModal} />
         <Comorbidities open={modalComorbidities} close={closeModal} />
-        <Groups open={modalGroups} close={closeModal} />
         <VaccineLocations open={modalVaccineLocations} close={closeModal} />
         <Phones open={modalPhones} close={closeModal} />
       </Container>

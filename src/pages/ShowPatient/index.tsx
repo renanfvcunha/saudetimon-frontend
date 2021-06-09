@@ -20,6 +20,7 @@ import masks from '../../utils/masks';
 import subHours from '../../utils/subHours';
 import catchHandler from '../../utils/catchHandler';
 import ModalChangeStatus from './ModalChangeStatus';
+import ModalChangeGroup from './ModalChangeGroup';
 
 const ShowPatient: React.FC = () => {
   const classes = useStyles();
@@ -29,6 +30,7 @@ const ShowPatient: React.FC = () => {
 
   const [patient, setPatient] = useState<IPatient>();
   const [modalChangeStatus, setModalChangeStatus] = useState(false);
+  const [modalChangeGroup, setModalChangeGroup] = useState(false);
 
   const fieldParsed = (fieldName: string) => {
     switch (fieldName) {
@@ -60,9 +62,8 @@ const ShowPatient: React.FC = () => {
   };
 
   const closeModal = () => {
-    if (modalChangeStatus) {
-      setModalChangeStatus(false);
-    }
+    if (modalChangeStatus) setModalChangeStatus(false);
+    if (modalChangeGroup) setModalChangeGroup(false);
   };
 
   const showPatient = useCallback(async () => {
@@ -257,6 +258,14 @@ const ShowPatient: React.FC = () => {
                   variant="contained"
                   color="primary"
                   className={classes.actBtn}
+                  onClick={() => setModalChangeGroup(true)}
+                >
+                  Alterar Grupo
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.actBtn}
                   onClick={() => setModalChangeStatus(true)}
                 >
                   Alterar Status
@@ -271,6 +280,15 @@ const ShowPatient: React.FC = () => {
         <ModalChangeStatus
           idPatient={patient.id.toString()}
           open={modalChangeStatus}
+          reloadData={showPatient}
+          close={closeModal}
+        />
+      )}
+
+      {patient && (
+        <ModalChangeGroup
+          idPatient={patient.id.toString()}
+          open={modalChangeGroup}
           reloadData={showPatient}
           close={closeModal}
         />
