@@ -25,6 +25,8 @@ interface Props {
   open: boolean;
   reloadData: () => Promise<void>;
   close: () => void;
+  idStatus: string;
+  message: string | null;
 }
 
 const ModalChangeStatus: React.FC<Props> = ({
@@ -32,6 +34,8 @@ const ModalChangeStatus: React.FC<Props> = ({
   open,
   reloadData,
   close,
+  idStatus,
+  message,
 }) => {
   const classes = useStyles();
   const { getStatusCall, handleChangePatientStatusCall } = useContext(
@@ -51,10 +55,12 @@ const ModalChangeStatus: React.FC<Props> = ({
     setLoading(true);
 
     try {
+      const statusMsgParsed = statusMsg !== '' ? statusMsg : null;
+
       const msg = await handleChangePatientStatusCall(
         idPatient,
         selectedStatus,
-        statusMsg
+        statusMsgParsed
       );
 
       toast.success(msg);
@@ -82,14 +88,17 @@ const ModalChangeStatus: React.FC<Props> = ({
     getStatus();
   }, [getStatusCall]);
 
+  useEffect(() => {
+    setSelectedStatus(idStatus);
+    if (message) {
+      setStatusMsg(message);
+    }
+  }, [idStatus, message]);
+
   return (
     <DefaultModal open={open} close={close}>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography
-          component="h1"
-          variant="h6"
-          style={{ fontWeight: 500, marginBottom: '1rem' }}
-        >
+      <div className={classes.modalContent}>
+        <Typography component="h1" variant="h6" className={classes.modalTitle}>
           Alterar Status
         </Typography>
 
@@ -117,8 +126,6 @@ const ModalChangeStatus: React.FC<Props> = ({
           variant="outlined"
           value={statusMsg}
           onChange={e => setStatusMsg(e.target.value)}
-          helperText="A mensagem informativa ficará visível para o paciente
-            para auxiliá-lo na atualização do cadastro em caso de status negado."
         />
 
         {loading && (
@@ -151,6 +158,12 @@ ModalChangeStatus.propTypes = {
   open: PropTypes.bool.isRequired,
   reloadData: PropTypes.func.isRequired,
   close: PropTypes.func.isRequired,
+  idStatus: PropTypes.string.isRequired,
+  message: PropTypes.string,
+};
+
+ModalChangeStatus.defaultProps = {
+  message: null,
 };
 
 export default ModalChangeStatus;

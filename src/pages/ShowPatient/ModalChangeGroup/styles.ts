@@ -2,6 +2,14 @@ import { createMuiTheme, makeStyles } from '@material-ui/core';
 import { green, red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(() => ({
+  modalContent: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  modalTitle: {
+    fontWeight: 500,
+    marginBottom: '1rem',
+  },
   msgField: {
     marginTop: '1rem',
   },

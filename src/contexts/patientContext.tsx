@@ -24,7 +24,7 @@ interface PatientContextData {
   handleChangePatientStatusCall: (
     id: string,
     idStatus: string,
-    message?: string
+    message: string | null
   ) => Promise<string>;
   handleChangePatientGroupCall: (
     id: string,
@@ -89,10 +89,10 @@ export const PatientProvider: React.FC = ({ children }) => {
   const handleChangePatientStatusCall = async (
     id: string,
     idStatus: string,
-    message?: string
+    message: string | null
   ) => {
     const response: AxiosResponse<{ msg: string }> = await api.patch(
-      `/patients/status/${id}`,
+      `/patients/${id}/status`,
       {
         idStatus,
         message,
@@ -115,7 +115,7 @@ export const PatientProvider: React.FC = ({ children }) => {
 
   const markAsVaccinatedCall = async (id: string) => {
     const response: AxiosResponse<{ msg: string }> = await api.patch(
-      `/markasvaccinated/${id}`
+      `/patients/${id}/markasvaccinated`
     );
 
     return response.data.msg;

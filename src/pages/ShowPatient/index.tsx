@@ -282,6 +282,8 @@ const ShowPatient: React.FC = () => {
           open={modalChangeStatus}
           reloadData={showPatient}
           close={closeModal}
+          idStatus={patient.patientStatus.status.id.toString()}
+          message={patient.patientStatus.message}
         />
       )}
 
@@ -291,6 +293,7 @@ const ShowPatient: React.FC = () => {
           open={modalChangeGroup}
           reloadData={showPatient}
           close={closeModal}
+          idGroup={patient.group.id.toString()}
         />
       )}
     </main>

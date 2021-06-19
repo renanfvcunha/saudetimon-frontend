@@ -24,6 +24,7 @@ interface Props {
   open: boolean;
   reloadData: () => Promise<void>;
   close: () => void;
+  idGroup: string;
 }
 
 const ModalChangeGroup: React.FC<Props> = ({
@@ -31,6 +32,7 @@ const ModalChangeGroup: React.FC<Props> = ({
   open,
   reloadData,
   close,
+  idGroup,
 }) => {
   const classes = useStyles();
   const { getGroupsCall, handleChangePatientGroupCall } = useContext(
@@ -75,14 +77,14 @@ const ModalChangeGroup: React.FC<Props> = ({
     getStatus();
   }, [getGroupsCall]);
 
+  useEffect(() => {
+    setSelectedGroup(idGroup);
+  }, [idGroup]);
+
   return (
     <DefaultModal open={open} close={close}>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography
-          component="h1"
-          variant="h6"
-          style={{ fontWeight: 500, marginBottom: '1rem' }}
-        >
+      <div className={classes.modalContent}>
+        <Typography component="h1" variant="h6" className={classes.modalTitle}>
           Alterar Grupo
         </Typography>
 
@@ -132,6 +134,7 @@ ModalChangeGroup.propTypes = {
   open: PropTypes.bool.isRequired,
   reloadData: PropTypes.func.isRequired,
   close: PropTypes.func.isRequired,
+  idGroup: PropTypes.string.isRequired,
 };
 
 export default ModalChangeGroup;
