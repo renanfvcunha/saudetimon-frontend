@@ -54,8 +54,8 @@ const ShowPatient: React.FC = () => {
         return 'Cartão de Puérperas';
       case 'bornAliveDec':
         return 'Declaração de Nascido Vivo';
-      case 'patientContract':
-        return 'Contrato com Paciente ou Declaração Autenticada';
+      case 'auxDoc':
+        return 'Documentação Auxiliar';
       default:
         return fieldName;
     }
