@@ -8,7 +8,7 @@ import React, {
   RefObject,
   ChangeEvent,
 } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import MaterialTable, { Icons, MTableToolbar } from 'material-table';
 import {
   FormControl,
@@ -31,6 +31,7 @@ import {
 } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
+import qs from 'query-string';
 
 import useStyles, { confirmationBtns } from './styles';
 import defaultStyles from '../../utils/defaultStyles';
@@ -57,6 +58,7 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
     markAsVaccinatedCall,
   } = useContext(PatientContext);
   const history = useHistory();
+  const { search } = useLocation();
 
   const [categories, setCategories] = useState<ICategory[]>();
   const [groups, setGroups] = useState<IGroup[]>();
@@ -67,12 +69,24 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
   const [selectedPatientName, setSelectedPatientName] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [queryString, setQueryString] = useState('');
+
   const handleChangeCategory = (e: ChangeEvent<{ value: unknown }>) => {
     setSelectedCategory(e.target.value as string);
+    let qsParsed = qs.parse(queryString);
+    qsParsed = { ...qsParsed, category: e.target.value as string };
+    if (qsParsed.group) {
+      qsParsed = { ...qsParsed, group: null };
+      setSelectedGroup('');
+    }
+    setQueryString(qs.stringify(qsParsed));
   };
 
   const handleChangeGroup = (e: ChangeEvent<{ value: unknown }>) => {
     setSelectedGroup(e.target.value as string);
+    let qsParsed = qs.parse(queryString);
+    qsParsed = { ...qsParsed, group: e.target.value as string };
+    setQueryString(qs.stringify(qsParsed));
   };
 
   const closeModal = () => {
@@ -184,6 +198,31 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
   useEffect(() => {
     tableRef.current?.onQueryChange();
   }, [tableRef, selectedGroup]);
+
+  useEffect(() => {
+    if (search !== '') {
+      setQueryString(search);
+      const qsParsed = qs.parse(search);
+
+      if (qsParsed.category) {
+        setSelectedCategory(qsParsed.category as string);
+
+        if (qsParsed.group) {
+          setSelectedGroup(qsParsed.group as string);
+        }
+      }
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (queryString !== '') {
+      window.history.replaceState(
+        '',
+        '',
+        `${window.location.pathname}?${queryString.replace('?', '')}`
+      );
+    }
+  }, [queryString]);
 
   return (
     <>

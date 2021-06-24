@@ -26,7 +26,7 @@ const ShowPatient: React.FC = () => {
   const classes = useStyles();
   const { id } = useParams<{ id: string }>();
   const { showPatientCall } = useContext(PatientContext);
-  const history = useHistory();
+  const { goBack } = useHistory();
 
   const [patient, setPatient] = useState<IPatient>();
   const [modalChangeStatus, setModalChangeStatus] = useState(false);
@@ -91,7 +91,7 @@ const ShowPatient: React.FC = () => {
           title="Voltar"
           aria-label="back"
           className={classes.backBtn}
-          onClick={() => history.goBack()}
+          onClick={goBack}
         >
           <Fab color="primary" size="small">
             <ArrowBack />
