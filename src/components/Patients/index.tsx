@@ -62,14 +62,16 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
 
   const [categories, setCategories] = useState<ICategory[]>();
   const [groups, setGroups] = useState<IGroup[]>();
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedGroup, setSelectedGroup] = useState('');
   const [modalConfirmation, setModalConfirmation] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState('');
   const [selectedPatientName, setSelectedPatientName] = useState('');
   const [loading, setLoading] = useState(false);
 
   const [queryString, setQueryString] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>();
 
   const handleChangeCategory = (e: ChangeEvent<{ value: unknown }>) => {
     setSelectedCategory(e.target.value as string);
@@ -79,6 +81,10 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
       qsParsed = { ...qsParsed, group: null };
       setSelectedGroup('');
     }
+    if (qsParsed.page) {
+      qsParsed = { ...qsParsed, page: '0' };
+      setCurrentPage(0);
+    }
     setQueryString(qs.stringify(qsParsed));
   };
 
@@ -86,6 +92,10 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
     setSelectedGroup(e.target.value as string);
     let qsParsed = qs.parse(queryString);
     qsParsed = { ...qsParsed, group: e.target.value as string };
+    if (qsParsed.page) {
+      qsParsed = { ...qsParsed, page: '0' };
+      setCurrentPage(0);
+    }
     setQueryString(qs.stringify(qsParsed));
   };
 
@@ -211,6 +221,19 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
           setSelectedGroup(qsParsed.group as string);
         }
       }
+      if (qsParsed.page) {
+        setCurrentPage(Number(qsParsed.page));
+      }
+    }
+  }, [search]);
+
+  useEffect(() => {
+    setQueryString(search);
+    const qsParsed = qs.parse(search);
+    if (qsParsed.perPage) {
+      setRowsPerPage(Number(qsParsed.perPage));
+    } else {
+      setRowsPerPage(50);
     }
   }, [search]);
 
@@ -230,153 +253,171 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
         <div className={classes.toolbar} />
         <div className={classes.tableBox}>
           <div className={classes.table}>
-            <MaterialTable
-              title={tableTitle}
-              tableRef={tableRef}
-              columns={[
-                {
-                  title: 'ID',
-                  field: 'id',
-                  type: 'numeric',
-                  align: 'left',
-                  headerStyle: {
-                    width: '5%',
+            {rowsPerPage && (
+              <MaterialTable
+                title={tableTitle}
+                tableRef={tableRef}
+                columns={[
+                  {
+                    title: 'ID',
+                    field: 'id',
+                    type: 'numeric',
+                    align: 'left',
+                    headerStyle: {
+                      width: '5%',
+                    },
+                    cellStyle: {
+                      width: '5%',
+                    },
                   },
-                  cellStyle: {
-                    width: '5%',
+                  {
+                    title: 'Nome',
+                    field: 'name',
+                    type: 'string',
+                    align: 'left',
                   },
-                },
-                {
-                  title: 'Nome',
-                  field: 'name',
-                  type: 'string',
-                  align: 'left',
-                },
-                {
-                  title: 'CPF',
-                  field: 'cpf',
-                  type: 'string',
-                  align: 'left',
-                  render: rowData => <>{masks.cpfMask(rowData.cpf)}</>,
-                },
-                {
-                  title: 'Cadastrado Em',
-                  field: 'createdAt',
-                  type: 'datetime',
-                  align: 'left',
-                  render: rowData => (
-                    <>{subHours(rowData.createdAt).toLocaleString()}</>
-                  ),
-                },
-              ]}
-              data={query =>
-                new Promise((resolve, reject) => {
-                  getPatientsCall(
-                    query.pageSize.toString(),
-                    query.page.toString(),
-                    status,
-                    selectedCategory,
-                    selectedGroup,
-                    'false'
-                  )
-                    .then(patient => {
-                      resolve({
-                        data: patient.data,
-                        page: query.page,
-                        totalCount: patient.totalCount,
+                  {
+                    title: 'CPF',
+                    field: 'cpf',
+                    type: 'string',
+                    align: 'left',
+                    render: rowData => <>{masks.cpfMask(rowData.cpf)}</>,
+                  },
+                  {
+                    title: 'Cadastrado Em',
+                    field: 'createdAt',
+                    type: 'datetime',
+                    align: 'left',
+                    render: rowData => (
+                      <>{subHours(rowData.createdAt).toLocaleString()}</>
+                    ),
+                  },
+                ]}
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                data={query =>
+                  new Promise((resolve, reject) => {
+                    getPatientsCall(
+                      rowsPerPage.toString(),
+                      currentPage.toString(),
+                      status,
+                      selectedCategory,
+                      selectedGroup,
+                      'false'
+                    )
+                      .then(patient => {
+                        resolve({
+                          data: patient.data,
+                          page: currentPage,
+                          totalCount: patient.totalCount,
+                        });
+                      })
+                      .catch(err => {
+                        reject(
+                          catchHandler(
+                            err,
+                            'Erro ao listar pacientes. Tente novamente ou contate o suporte.'
+                          )
+                        );
                       });
-                    })
-                    .catch(err => {
-                      reject(
-                        catchHandler(
-                          err,
-                          'Erro ao listar pacientes. Tente novamente ou contate o suporte.'
-                        )
-                      );
-                    });
-                })
-              }
-              icons={tableIcons}
-              actions={tableActions}
-              localization={{
-                toolbar: {
-                  searchPlaceholder: 'Procurar',
-                  searchTooltip: 'Procurar',
-                },
-                header: {
-                  actions: 'Ações',
-                },
-                body: {
-                  emptyDataSourceMessage: 'Busca não obteve resultados',
-                },
-                pagination: {
-                  firstTooltip: 'Primeira Página',
-                  lastTooltip: 'Última Página',
-                  previousTooltip: 'Página Anterior',
-                  nextTooltip: 'Próxima Página',
-                  labelDisplayedRows: '{from}-{to} de {count}',
-                  labelRowsSelect: 'linhas',
-                },
-              }}
-              options={{
-                actionsColumnIndex: -1,
-                headerStyle: {
-                  backgroundColor: defaultStyles.purpleDark,
-                  color: '#fff',
-                },
-                sorting: false,
-                search: false,
-                pageSize: 50,
-                pageSizeOptions: [5, 10, 20, 50, 100, 200],
-              }}
-              components={{
-                Toolbar: props => (
-                  <>
-                    <MTableToolbar {...props} />
-                    <div className={classes.selects}>
-                      {categories && (
-                        <FormControl className={classes.selectCategories}>
-                          <InputLabel>Categoria</InputLabel>
-                          <Select
-                            value={selectedCategory}
-                            onChange={handleChangeCategory}
-                          >
-                            <MenuItem value="">Todas</MenuItem>
-                            {categories.map(category => (
-                              <MenuItem
-                                key={category.id}
-                                value={category.id.toString()}
-                              >
-                                {category.category}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      )}
-                      {groups && (
-                        <FormControl className={classes.selectGroups}>
-                          <InputLabel>Grupo</InputLabel>
-                          <Select
-                            value={selectedGroup}
-                            onChange={handleChangeGroup}
-                          >
-                            <MenuItem value="">Todos</MenuItem>
-                            {groups.map(group => (
-                              <MenuItem
-                                key={group.id}
-                                value={group.id.toString()}
-                              >
-                                {group.group}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      )}
-                    </div>
-                  </>
-                ),
-              }}
-            />
+                  })
+                }
+                icons={tableIcons}
+                actions={tableActions}
+                localization={{
+                  toolbar: {
+                    searchPlaceholder: 'Procurar',
+                    searchTooltip: 'Procurar',
+                  },
+                  header: {
+                    actions: 'Ações',
+                  },
+                  body: {
+                    emptyDataSourceMessage: 'Busca não obteve resultados',
+                  },
+                  pagination: {
+                    firstTooltip: 'Primeira Página',
+                    lastTooltip: 'Última Página',
+                    previousTooltip: 'Página Anterior',
+                    nextTooltip: 'Próxima Página',
+                    labelDisplayedRows: '{from}-{to} de {count}',
+                    labelRowsSelect: 'linhas',
+                  },
+                }}
+                options={{
+                  actionsColumnIndex: -1,
+                  headerStyle: {
+                    backgroundColor: defaultStyles.purpleDark,
+                    color: '#fff',
+                  },
+                  sorting: false,
+                  search: false,
+                  pageSize: rowsPerPage,
+                  pageSizeOptions: [5, 10, 20, 50, 100, 200],
+                }}
+                onChangePage={page => {
+                  setCurrentPage(page);
+                  let qsParsed = qs.parse(queryString);
+                  qsParsed = {
+                    ...qsParsed,
+                    page: page.toString(),
+                  };
+                  setQueryString(qs.stringify(qsParsed));
+                }}
+                onChangeRowsPerPage={pageSize => {
+                  setRowsPerPage(pageSize);
+                  let qsParsed = qs.parse(queryString);
+                  qsParsed = { ...qsParsed, perPage: pageSize.toString() };
+                  setQueryString(qs.stringify(qsParsed));
+                }}
+                components={{
+                  Toolbar: props => (
+                    <>
+                      <MTableToolbar {...props} />
+                      <div className={classes.selects}>
+                        {categories && (
+                          <FormControl className={classes.selectCategories}>
+                            <InputLabel>Categoria</InputLabel>
+                            <Select
+                              value={selectedCategory}
+                              onChange={handleChangeCategory}
+                            >
+                              <MenuItem value="">Todas</MenuItem>
+                              {categories.map(category => (
+                                <MenuItem
+                                  key={category.id}
+                                  value={category.id.toString()}
+                                >
+                                  {category.category}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        )}
+                        {groups && (
+                          <FormControl className={classes.selectGroups}>
+                            <InputLabel>Grupo</InputLabel>
+                            <Select
+                              value={selectedGroup}
+                              onChange={handleChangeGroup}
+                            >
+                              <MenuItem value="">Todos</MenuItem>
+                              {groups.map(group => (
+                                <MenuItem
+                                  key={group.id}
+                                  value={group.id.toString()}
+                                >
+                                  {group.group}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        )}
+                      </div>
+                    </>
+                  ),
+                }}
+              />
+            )}
           </div>
         </div>
       </main>
