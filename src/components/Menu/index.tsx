@@ -37,6 +37,7 @@ import Routes from '../../routes';
 import authContext from '../../contexts/authContext';
 import logo from '../../images/logo.png';
 import patientIcon from '../../images/icons/patientIcon.svg';
+import exportIcon from '../../images/icons/exportIcon.svg';
 
 const Menu: React.FC = () => {
   const theme = useTheme();
@@ -227,6 +228,23 @@ const Menu: React.FC = () => {
                         <CancelPresentation className={classes.icon} />
                       </ListItemIcon>
                       <ListItemText primary="Pacientes Negados" />
+                    </ListItem>
+                  </Link>
+
+                  <Link to="/pacientes/exportar" className={classes.link}>
+                    <ListItem
+                      button
+                      onClick={() => {
+                        setChangePathName(true);
+                        setPageTitle('Exportar Pacientes');
+                      }}
+                      selected={pathName.startsWith('pacientes/exportar')}
+                      className={classes.nested}
+                    >
+                      <ListItemIcon>
+                        <img src={exportIcon} alt="Export Icon" />
+                      </ListItemIcon>
+                      <ListItemText primary="Exportar" />
                     </ListItem>
                   </Link>
                 </List>

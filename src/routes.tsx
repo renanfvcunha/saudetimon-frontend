@@ -7,6 +7,7 @@ import NotFound from './pages/NotFound';
 import NewPatients from './pages/NewPatients';
 import PreApprovedPatients from './pages/PreApprovedPatients';
 import DisapprovedPatients from './pages/DisapprovedPatients';
+import ExportPatients from './pages/ExportPatients';
 import ApprovedPatients from './pages/ApprovedPatients';
 import ShowPatient from './pages/ShowPatient';
 import Users from './pages/Users';
@@ -18,6 +19,7 @@ const Routes: React.FC = () => (
     <Route path="/pacientes/pre-aprovados" component={PreApprovedPatients} />
     <Route path="/pacientes/aprovados" component={ApprovedPatients} />
     <Route path="/pacientes/negados" component={DisapprovedPatients} />
+    <Route path="/pacientes/exportar" component={ExportPatients} />
     <Route path="/pacientes/:id" component={ShowPatient} />
     <PrivateRoute path="/usuarios" component={Users} />
 
