@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
 
 import useStyles, { actionButtons, confirmationBtns } from './styles';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 import ModalAddPhone from './ModalAddPhone';
 import ModalEditPhone from './ModalEditPhone';
 import ModalConfirmation from '../../../components/ModalConfirmation';
@@ -48,7 +48,7 @@ const Phones: React.FC<Props> = ({ open, close }) => {
       setPhones(response.data);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível listar os contatos. Tente novamente ou contate o suporte.'
       );
     }
@@ -67,7 +67,7 @@ const Phones: React.FC<Props> = ({ open, close }) => {
       }
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível remover o contato. Tente novamente ou contate o suporte.'
       );
     }

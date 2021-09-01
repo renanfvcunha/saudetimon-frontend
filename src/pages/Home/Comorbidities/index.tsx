@@ -14,7 +14,7 @@ import { AxiosResponse } from 'axios';
 import useStyles, { actionButtons } from './styles';
 import { buttonsTheme } from './ModalAddComorbidity/styles';
 import IComorbidity from '../../../typescript/IComorbidity';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 import ModalAddComorbidity from './ModalAddComorbidity';
 import ModalEditComorbidity from './ModalEditComorbidity';
 import ModalConfirmation from '../../../components/ModalConfirmation';
@@ -51,7 +51,7 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
       setComorbidities(response.data);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível listar as comorbidades. Tente novamente ou contate o suporte.'
       );
     }
@@ -68,7 +68,7 @@ const Comorbidities: React.FC<Props> = ({ open, close }) => {
       setModalConfirmation(false);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível remover a comorbidade. Tente novamente ou contate o suporte.'
       );
     }

@@ -1,4 +1,4 @@
-import { makeStyles, createStyles, createMuiTheme } from '@material-ui/core';
+import { makeStyles, createStyles, createTheme } from '@material-ui/core';
 
 import defaultStyles from '../../utils/defaultStyles';
 
@@ -99,7 +99,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const ThemeColor = createMuiTheme({
+export const ThemeColor = createTheme({
   palette: {
     primary: {
       main: defaultStyles.purpleLight,

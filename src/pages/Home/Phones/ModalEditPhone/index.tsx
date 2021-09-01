@@ -12,7 +12,7 @@ import { AxiosResponse } from 'axios';
 
 import DefaultModal from '../../../../components/DefaultModal';
 import useStyles, { buttonsTheme } from './styles';
-import catchHandler from '../../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../../utils/catchHandler';
 import api from '../../../../services/api';
 import masks from '../../../../utils/masks';
 import IPhone from '../../../../typescript/IPhone';
@@ -53,7 +53,7 @@ const ModalEditPhone: React.FC<Props> = ({
       close();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível adicionar o grupo. Tente novamente ou contate o suporte.'
       );
     } finally {

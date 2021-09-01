@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import DefaultModal from '../../../components/DefaultModal';
 import useStyles, { Green } from './styles';
 import UserContext from '../../../contexts/userContext';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 
 interface IModal {
   open: boolean;
@@ -72,7 +72,7 @@ const NewUser: React.FC<IModal> = ({ open, close, setSuccess }) => {
       clearFields();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível cadastrar o usuário. Tente novamente ou contate o suporte.'
       );
     } finally {

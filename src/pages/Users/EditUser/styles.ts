@@ -2,7 +2,7 @@ import {
   makeStyles,
   Theme,
   createStyles,
-  createMuiTheme,
+  createTheme,
 } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Green = createMuiTheme({
+export const Green = createTheme({
   palette: {
     primary: {
       main: defaultStyles.purpleDark,

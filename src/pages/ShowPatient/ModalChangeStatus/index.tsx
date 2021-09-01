@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 
 import DefaultModal from '../../../components/DefaultModal';
 import useStyles, { ActButtons } from './styles';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 import PatientContext from '../../../contexts/patientContext';
 import IStatus from '../../../typescript/IStatus';
 
@@ -70,7 +70,7 @@ const ModalChangeStatus: React.FC<Props> = ({
       close();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Erro ao alterar status do paciente. Tente novamente ou contate o suporte.'
       );
     } finally {

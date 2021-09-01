@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 
-interface Err extends Error {
+export interface Err extends Error {
   response?: AxiosResponse<{ msg: string }>;
 }
 

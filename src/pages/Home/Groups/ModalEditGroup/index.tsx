@@ -16,7 +16,7 @@ import { AxiosResponse } from 'axios';
 
 import DefaultModal from '../../../../components/DefaultModal';
 import useStyles, { buttonsTheme } from './styles';
-import catchHandler from '../../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../../utils/catchHandler';
 import ICategory from '../../../../typescript/ICategory';
 import api from '../../../../services/api';
 
@@ -61,7 +61,7 @@ const ModalEditGroup: React.FC<Props> = ({
       close();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível editar a comorbidade. Tente novamente ou contate o suporte.'
       );
     } finally {
@@ -79,7 +79,7 @@ const ModalEditGroup: React.FC<Props> = ({
         setCategories(response.data);
       } catch (err) {
         catchHandler(
-          err,
+          err as Err,
           'Não foi possível listar as categorias. Tente novamente ou contate o suporte.'
         );
       }

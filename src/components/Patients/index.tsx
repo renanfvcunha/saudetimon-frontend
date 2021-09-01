@@ -39,7 +39,7 @@ import subHours from '../../utils/subHours';
 import masks from '../../utils/masks';
 import IGroup from '../../typescript/IGroup';
 import PatientContext from '../../contexts/patientContext';
-import catchHandler from '../../utils/catchHandler';
+import catchHandler, { Err } from '../../utils/catchHandler';
 import ModalConfirmation from '../ModalConfirmation';
 import ICategory from '../../typescript/ICategory';
 
@@ -118,7 +118,7 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
       refreshTable();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível marcar o paciente como vacinado. Tente novamente ou contate o suporte.'
       );
     } finally {
@@ -177,7 +177,7 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
         setCategories(data);
       } catch (err) {
         catchHandler(
-          err,
+          err as Err,
           'Erro ao listar categorias. Tente novamente ou contate o suporte.'
         );
       }
@@ -194,7 +194,7 @@ const Patients: React.FC<Props> = ({ tableTitle, status }) => {
         setGroups(data);
       } catch (err) {
         catchHandler(
-          err,
+          err as Err,
           'Erro ao listar grupos. Tente novamente ou contate o suporte.'
         );
       }

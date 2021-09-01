@@ -14,7 +14,7 @@ import { AxiosResponse } from 'axios';
 import useStyles, { actionButtons } from './styles';
 import { buttonsTheme } from './ModalAddGroup/styles';
 import IGroup from '../../../typescript/IGroup';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 import ModalAddGroup from './ModalAddGroup';
 import ModalEditGroup from './ModalEditGroup';
 import ModalConfirmation from '../../../components/ModalConfirmation';
@@ -50,7 +50,7 @@ const Groups: React.FC<Props> = ({ open, close }) => {
       setGroups(response.data);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível listar os grupos. Tente novamente ou contate o suporte.'
       );
     }
@@ -67,7 +67,7 @@ const Groups: React.FC<Props> = ({ open, close }) => {
       setModalConfirmation(false);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível remover os grupos. Tente novamente ou contate o suporte.'
       );
     }

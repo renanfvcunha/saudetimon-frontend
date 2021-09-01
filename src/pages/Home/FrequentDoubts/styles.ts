@@ -1,4 +1,4 @@
-import { createMuiTheme, makeStyles } from '@material-ui/core';
+import { createTheme, makeStyles } from '@material-ui/core';
 import { blue, red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(() => ({
@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const doubtActionsBtns = createMuiTheme({
+export const doubtActionsBtns = createTheme({
   palette: {
     primary: {
       main: blue['500'],

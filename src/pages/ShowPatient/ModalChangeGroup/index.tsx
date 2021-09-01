@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 
 import DefaultModal from '../../../components/DefaultModal';
 import useStyles, { ActButtons } from './styles';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 import PatientContext from '../../../contexts/patientContext';
 import IGroup from '../../../typescript/IGroup';
 
@@ -59,7 +59,7 @@ const ModalChangeGroup: React.FC<Props> = ({
       close();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Erro ao alterar grupo do paciente. Tente novamente ou contate o suporte.'
       );
     } finally {

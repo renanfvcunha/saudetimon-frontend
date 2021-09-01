@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 import useStyles, { actionButtons, btnGreen, confirmationBtns } from './styles';
 import DefaultModal from '../../../components/DefaultModal';
 import IVaccineLocation from '../../../typescript/IVaccineLocation';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 import api from '../../../services/api';
 import ModalAddLocation from './ModalAddLocation';
 import ModalEditLocation from './ModalEditLocation';
@@ -54,7 +54,7 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
       setLocations(response.data);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível listar os locais de vacinação. Tente novamente ou contate o suporte.'
       );
     }
@@ -73,7 +73,7 @@ const VaccineLocations: React.FC<Props> = ({ open, close }) => {
       }
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível remover o local de vacinação. Tente novamente ou contate o suporte.'
       );
     }

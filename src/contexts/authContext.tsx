@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext } from 'react';
 import PropTypes from 'prop-types';
 
 import api from '../services/api';
-import catchHandler from '../utils/catchHandler';
+import catchHandler, { Err } from '../utils/catchHandler';
 
 interface AuthContextData {
   signed: boolean;
@@ -55,7 +55,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       }
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Erro desconhecido ao fazer login. Tente novamente ou contate o suporte.'
       );
 

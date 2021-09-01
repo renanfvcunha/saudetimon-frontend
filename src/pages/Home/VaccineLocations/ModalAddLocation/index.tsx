@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 
 import DefaultModal from '../../../../components/DefaultModal';
 import useStyles, { buttonsTheme } from './styles';
-import catchHandler from '../../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../../utils/catchHandler';
 import api from '../../../../services/api';
 
 interface Props {
@@ -74,7 +74,7 @@ const ModalAddLocation: React.FC<Props> = ({ open, close, refreshData }) => {
       close();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível adicionar a dúvida. Tente novamente ou contate o suporte.'
       );
     } finally {

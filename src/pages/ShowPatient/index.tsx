@@ -18,7 +18,7 @@ import PatientContext from '../../contexts/patientContext';
 import IPatient from '../../typescript/IPatient';
 import masks from '../../utils/masks';
 import subHours from '../../utils/subHours';
-import catchHandler from '../../utils/catchHandler';
+import catchHandler, { Err } from '../../utils/catchHandler';
 import ModalChangeStatus from './ModalChangeStatus';
 import ModalChangeGroup from './ModalChangeGroup';
 
@@ -73,7 +73,7 @@ const ShowPatient: React.FC = () => {
       setPatient(data);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Erro ao buscar dados do paciente. Tente novamente ou contate o suporte.'
       );
     }

@@ -19,7 +19,7 @@ import { buttonsTheme } from './ModalAddDoubt/styles';
 import ModalAddDoubt from './ModalAddDoubt';
 import IDoubt from '../../../typescript/IDoubt';
 import api from '../../../services/api';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 import ModalEditDoubt from './ModalEditDoubt';
 import ModalConfirmation from '../../../components/ModalConfirmation';
 import nl2br from '../../../utils/nl2br';
@@ -52,7 +52,7 @@ const FrequentDoubts: React.FC<Props> = ({ open, close }) => {
       setDoubts(response.data);
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível listar as dúvidas frequentes. Tente novamente ou contate o suporte.'
       );
     }
@@ -69,7 +69,7 @@ const FrequentDoubts: React.FC<Props> = ({ open, close }) => {
       closeModal();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível remover a dúvida. Tente novamente ou contate o suporte.'
       );
     } finally {

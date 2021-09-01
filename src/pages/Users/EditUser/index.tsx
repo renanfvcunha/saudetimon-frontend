@@ -27,7 +27,7 @@ import DefaultModal from '../../../components/DefaultModal';
 import IUser from '../../../typescript/IUser';
 import useStyles, { Green } from './styles';
 import UserContext from '../../../contexts/userContext';
-import catchHandler from '../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../utils/catchHandler';
 
 interface IModal {
   open: boolean;
@@ -81,7 +81,7 @@ const EditUser: React.FC<IModal> = ({ open, close, setSuccess, idUser }) => {
       close();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível atualizar o usuário. Tente novamente ou contate o suporte.'
       );
     } finally {
@@ -97,7 +97,7 @@ const EditUser: React.FC<IModal> = ({ open, close, setSuccess, idUser }) => {
         setUser(data);
       } catch (err) {
         catchHandler(
-          err,
+          err as Err,
           'Não foi possível listar os dados do usuário. Tente novamente ou contate o suporte.'
         );
       }

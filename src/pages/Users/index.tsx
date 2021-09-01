@@ -29,7 +29,7 @@ import useStyles, { ActButtons } from './styles';
 import defaultStyles from '../../utils/defaultStyles';
 import subHours from '../../utils/subHours';
 import UserContext from '../../contexts/userContext';
-import catchHandler from '../../utils/catchHandler';
+import catchHandler, { Err } from '../../utils/catchHandler';
 import NewUser from './NewUser';
 import EditUser from './EditUser';
 import ModalConfirmation from '../../components/ModalConfirmation';
@@ -90,7 +90,7 @@ const Users: React.FC = () => {
       }
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível excluir o usuário. Tente novamente ou contate o suporte.'
       );
     }
@@ -183,7 +183,7 @@ const Users: React.FC = () => {
                   .catch(err => {
                     reject(
                       catchHandler(
-                        err,
+                        err as Err,
                         'Não foi possível listar os usuários. Tente novamente ou contate o suporte.'
                       )
                     );

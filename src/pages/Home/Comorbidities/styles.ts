@@ -1,4 +1,4 @@
-import { createMuiTheme, makeStyles } from '@material-ui/core';
+import { createTheme, makeStyles } from '@material-ui/core';
 import { orange, red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(() => ({
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const actionButtons = createMuiTheme({
+export const actionButtons = createTheme({
   palette: {
     primary: {
       main: orange['800'],

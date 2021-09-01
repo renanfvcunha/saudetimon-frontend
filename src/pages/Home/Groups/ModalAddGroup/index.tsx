@@ -16,7 +16,7 @@ import { AxiosResponse } from 'axios';
 
 import DefaultModal from '../../../../components/DefaultModal';
 import useStyles, { buttonsTheme } from './styles';
-import catchHandler from '../../../../utils/catchHandler';
+import catchHandler, { Err } from '../../../../utils/catchHandler';
 import ICategory from '../../../../typescript/ICategory';
 import api from '../../../../services/api';
 
@@ -53,7 +53,7 @@ const ModalAddGroup: React.FC<Props> = ({ open, close, refreshData }) => {
       close();
     } catch (err) {
       catchHandler(
-        err,
+        err as Err,
         'Não foi possível adicionar o grupo. Tente novamente ou contate o suporte.'
       );
     } finally {
@@ -71,7 +71,7 @@ const ModalAddGroup: React.FC<Props> = ({ open, close, refreshData }) => {
         setCategories(response.data);
       } catch (err) {
         catchHandler(
-          err,
+          err as Err,
           'Não foi possível listar as categorias. Tente novamente ou contate o suporte.'
         );
       }
