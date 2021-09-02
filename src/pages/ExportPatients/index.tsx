@@ -50,7 +50,7 @@ const ExportPatients: React.FC = () => {
     let uri = `/patients/export?type=${format}`;
 
     if (period === 'specific') {
-      uri += `&start=${periodStart}&end=${periodEnd}`;
+      uri += `&start=${`${periodStart} 00:00:00`}&end=${`${periodEnd} 23:59:59`}`;
     }
 
     try {
@@ -159,6 +159,7 @@ const ExportPatients: React.FC = () => {
               variant="contained"
               className={classes.mt1}
               onClick={exportData}
+              disabled={loading}
             >
               Exportar
             </Button>
