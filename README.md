@@ -1,46 +1,116 @@
-# Getting Started with Create React App
+<img
+  src="./src/images/logo.png"
+  width="500"
+  style="display: block; margin-left: auto; margin-right: auto;"
+/>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Saúde Timon 24h - Frontend Administrator
 
-## Available Scripts
+## Sobre o Projeto
 
-In the project directory, you can run:
+O aplicativo Saúde Timon 24h permite aos usuários realizar o cadastro para a
+vacinação contra a Covid-19 na cidade de Timon-MA.
 
-### `yarn start`
+Dentre as funcionalidades estão o cadastro para a vacinação por grupos, checagem
+do status do cadastro, consulta a locais de vacinação, entre outros.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+O projeto atual é um painel administrativo onde somente pessoas credenciadas
+podem acessar o sistema.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Tecnologias e Estrutura
+O projeto foi escrito utilizando as seguintes tecnologias:
 
-### `yarn test`
+* Linguagem: [Typescript](https://www.typescriptlang.org/)
+* Biblioteca: [ReactJS](https://pt-br.reactjs.org/)
+  (inicializado com o [Create React App](https://create-react-app.dev/))
+* Biblioteca de Componentes: [Material-UI v4](https://v4.mui.com/pt/)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+O projeto foi escrito utilizando o padrão de hooks do react (React Hooks)
+utilizando componentes funcionais. Dentre as pastas do projeto, se destacam:
 
-### `yarn build`
+* src: Pasta principal que contém todos os arquivos importantes do projeto.
+* src/components: Pasta onde se localizam componentes reutilizáveis.
+* src/contexts: Pasta que contém algumas APIs de contexto.
+* src/pages: Pasta que contém as páginas do sistema, definidas no arquivo
+  routes. tsx.
+* src/services: Pasta que contém os providers utilizados no sistema.
+* src/typescript: Pasta que contém as tipagens e interfaces utilizadas pelo
+  typescript.
+* src/utils: Pasta que contém funções utilitárias.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Como executar o projeto
+### Desenvolvimento
+1. Instalar as dependências.
+```bash
+$ npm i
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+$ yarn
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Copiar o arquivo .env.example nomeando como .env e setar as variáveis de
+   ambiente necessárias.
 
-### `yarn eject`
+3. Iniciar o projeto
+```bash
+$ npm run start
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+$ yarn start
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Após isso o projeto estará pronto para ser utilizado em desenvolvimento.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Produção
+1. Instalar as dependências.
+```bash
+$ npm i
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+$ yarn
+```
 
-## Learn More
+2. Copiar o arquivo .env.example nomeando como .env e setar as variáveis de
+   ambiente necessárias.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. Gerar a build de produção
+```bash
+$ npm run build
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+$ yarn build
+```
+
+4. Iniciar o conteúdo da pasta gerada `build` utilizando algum servidor web.
+
+5. Após isso o projeto estará pronto para ser utilizado em produção.
+
+<img
+  src="./demo/demo01.png"
+  width="800"
+  style="display: block; margin-left: auto; margin-right: auto;"
+/>
+
+<img
+  src="./demo/demo02.png"
+  width="800"
+  style="display: block; margin-left: auto; margin-right: auto;"
+/>
+
+<img
+  src="./demo/demo03.png"
+  width="800"
+  style="display: block; margin-left: auto; margin-right: auto;"
+/>
+
+<p align="center">
+  (Dados fictícios gerados no site <a href="https://www.4devs.com.br/">4Devs</a>)
+</p>
+
+<img
+  src="./demo/demo04.png"
+  width="800"
+  style="display: block; margin-left: auto; margin-right: auto;"
+/>
+
+<img
+  src="./demo/demo05.png"
+  width="800"
+  style="display: block; margin-left: auto; margin-right: auto;"
+/>
