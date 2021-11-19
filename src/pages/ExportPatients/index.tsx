@@ -46,7 +46,6 @@ const ExportPatients: React.FC = () => {
   };
 
   const exportData = async () => {
-    setLoading(true);
     let uri = `/patients/export?type=${format}`;
 
     if (period === 'specific') {
@@ -54,6 +53,7 @@ const ExportPatients: React.FC = () => {
     }
 
     try {
+      setLoading(true);
       const response: AxiosResponse<Blob> = await api.get(uri, {
         responseType: 'blob',
       });
@@ -63,10 +63,15 @@ const ExportPatients: React.FC = () => {
       const date = datetime.split(' ')[0].split('/').join('');
       const time = datetime.split(' ')[1].split(':').join('');
 
-      if (/office/.test(response.data.type)) {
-        ext = 'xlsx';
-      } else {
-        ext = 'pdf';
+      switch (response.data.type) {
+        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+          ext = 'xlsx';
+          break;
+        case 'application/pdf':
+          ext = 'pdf';
+          break;
+        default:
+          break;
       }
 
       saveAs(response.data, `relatorio-${date}-${time}.${ext}`);
